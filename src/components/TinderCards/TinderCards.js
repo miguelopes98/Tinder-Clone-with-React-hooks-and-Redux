@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import database from '../../firebase';
 
 import classes from './TinderCards.css';
 import TinderCard from 'react-tinder-card';
@@ -7,18 +8,27 @@ const TinderCards = () => {
 
   /* since we're not allowing users to be created yet, we're just going to use
   dummy data that we created here to have 'fake users' to swipe on*/
-  const [people, setPeople] = useState([
-    {
-      name: "Sonic",
-      url:"https://cdn.vox-cdn.com/thumbor/pJcxMFhEAZ2cvnflEqMFD6z-OiU=/1400x1400/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/20007968/Screen_Shot_2020_05_28_at_4.34.01_PM.png",
-      age: "Immortal"
-    },
-    {
-      name: "Steve Jobs",
-      url: "https://cdn.vox-cdn.com/thumbor/rES5fxTJl-z014NcJV7Rradtxrc=/0x86:706x557/1400x1400/filters:focal(0x86:706x557):format(png)/cdn.vox-cdn.com/imported_assets/847184/stevejobs.png",
-      age: "Dead"
-    }
-  ]);
+  const [people, setPeople] = useState([]);
+
+  useEffect(() => {
+    console.log(process.env.REACT_APP_API_KEY);
+    //we're grabbing the people we have in our database, instead of using the dummy data we had defined in the local state of this component
+    //To grab info from a collection, we use onSnapshot, this constantly listen to a document/collection, whenever something inside that document/collection changes,
+    //onSnapshot is automatically re-called so that we're grabbing the updated document/collection from firebase
+    //if we had used .get() we would retrieve a single document/collection only once, if something changes in that document/collection, if we want to use the updated version of it, we have to re-call .get() manually.
+    
+    //in this case, we grabbed a snapshot from out collection, then we have that snapshot and we access the documents we have inside it using .docs and then we loop through them using map
+    database.collection('people').onSnapshot(snapshot => {
+      return (
+        //whatever is in the return statement inside the map function is added to an array which is returned by the map function when we finish looping through the documents.
+        //in the database we have all the users we want to loop through, therefore we just replace the whole local state with what we grabbed from the database.
+        //we didn't use the spread operator to preserve parts of the previous local state.
+        setPeople(snapshot.docs.map(document => {
+          return document.data();
+        }))
+      );
+    });
+  }, []);
 
   return (
     <div>
