@@ -1,0 +1,20 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #f9f9f9;
+  align-items: center;
+}
+
+.logo{
+  height: 40px;
+  /* sometimes writting height or width for images distorts the shape of them
+  , the way we can fix that is by using object-fit: contain,
+  this will preserve the height width ratio of the image and still downsize it
+  to have the height of 40px and the respective width, while respecting
+  the ratio of the image*/
+  object-fit: contain;
+}
+
+.icon{
+  padding: 20px;
+}
