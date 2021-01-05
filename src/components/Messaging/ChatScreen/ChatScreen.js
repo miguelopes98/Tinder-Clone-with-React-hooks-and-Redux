@@ -5,6 +5,8 @@ import Avatar from '@material-ui/core/Avatar';
 
 const ChatScreen = () => {
 
+  const [input, setInput] = useState('');
+
   //the first 2 messages are from astrid and the last one is from the logged in user that is talking to her
   const [messages, setMessages] = useState([
     {
@@ -22,10 +24,18 @@ const ChatScreen = () => {
     }
   ])
 
+  const sendHandler = (event) => {
+    event.preventDefault();
+
+    setMessages([...messages, { text: input}]);
+
+    setInput("");
+  }
+
   return (
     <div className={classes.chatScreen}>
       <p className={classes.timestamp}>YOU MATCHED WITH ASTRID ON 10/08/2020</p>
-      {messages.map( (message) => {
+      {messages.map( (message, index) => {
 
         let text = (
           <div className={classes.message}>
@@ -45,7 +55,7 @@ const ChatScreen = () => {
         }
 
         return (
-          <div className={classes.message}>
+          <div className={classes.message} key={index}>
             {text}
           </div>
         );
@@ -53,11 +63,13 @@ const ChatScreen = () => {
 
       <form className={classes.input}>
         <input
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
           className={classes.inputField}
           type="text" 
           placeholder="Type a message..."
         />
-        <button className={classes.inputButton}>SEND</button>
+        <button onClick={sendHandler} type="submit" className={classes.inputButton}>SEND</button>
       </form>
 
     </div>
