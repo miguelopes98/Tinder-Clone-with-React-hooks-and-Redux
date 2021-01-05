@@ -5,13 +5,11 @@ import classes from './App.css';
 import Header from './components/Navbar/Header';
 import TinderCards from './components/TinderCards/TinderCards';
 import SwipeButtons from './components/SwipeButtons/SwipeButtons';
+import Chats from './components/Chats/Chats';
 
 const App = () => {
   return (
     <div className={classes.App}>
-      <h1>App Component</h1>
-
-      
 
       <Router>
 
@@ -20,7 +18,7 @@ const App = () => {
           <Route path="/chat">
             {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
             <Header backButton="/"/>
-            <p>chatPage</p>
+            <Chats/>
           </Route>
 
           <Route path="/">
@@ -33,15 +31,8 @@ const App = () => {
 
         </Switch>
 
-
-        {/*Chats screen*/}
-
         {/*Individual chat screen*/}
       </Router>
-
-      
-
-
     </div>
   );
 }
