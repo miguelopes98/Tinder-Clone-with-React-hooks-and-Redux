@@ -25,3 +25,10 @@
 .chatTimestamp{
   color: lightgray;
 }
+
+/*this removes the underline of each chat and color inherit removes the color we get from each chat being a link
+don't forget that the start selects everything*/
+*{
+  text-decoration: none;
+  color: inherit;
+}
