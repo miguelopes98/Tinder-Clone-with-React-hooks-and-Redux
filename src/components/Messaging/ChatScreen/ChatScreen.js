@@ -50,6 +50,16 @@ const ChatScreen = () => {
           </div>
         );
       })}
+
+      <form className={classes.input}>
+        <input
+          className={classes.inputField}
+          type="text" 
+          placeholder="Type a message..."
+        />
+        <button className={classes.inputButton}>SEND</button>
+      </form>
+
     </div>
   );
 };

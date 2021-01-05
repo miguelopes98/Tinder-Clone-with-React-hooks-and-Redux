@@ -14,7 +14,8 @@
 .chatDetails{
   /* when we did space-between in the flexbox set in the .chat class, we had empty spaces between the 3 child elements,
   by doing flex:1 here we say that the child element with this class should absorb that empty space so that there is no empty space
-  and that empty space actually gets 'transfered' to the element with this class, if we do that before and after and inspect it, you ll get it*/
+  and that empty space actually gets 'transfered' to the element with this class, if we do that before and after and inspect it, you ll get it.
+  even if we had only one element, this would tell that one element to absorb that empty space that we have*/
   flex: 1;
 }
 
