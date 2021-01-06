@@ -33,5 +33,9 @@ export const checkValidity = ( value, rules ) => {
     isValid = pattern.test( value ) && isValid
   }
 
+  if(rules.isImageUrl) {
+    isValid = value.match(/\.(jpeg|jpg|gif|png)$/) !== null && isValid;
+  }
+
   return isValid;
 }

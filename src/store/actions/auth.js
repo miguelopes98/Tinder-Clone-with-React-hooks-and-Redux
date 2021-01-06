@@ -40,7 +40,14 @@ export const checkAuthTimeout = (expirationTime) => {
   };
 };
 
-export const auth = (email, password, isSignup) => {
+/*export const setAuthRedirectPath = (path) => {
+  return {
+    type: actionTypes.SET_AUTH_REDIRECT_PATH,
+    path: path
+  };
+};*/
+
+export const auth = (email, password, profilePicture, age, firstName, lastName, isSignup) => {
   return dispatch => {
     dispatch(authStart());
     const authData = {
