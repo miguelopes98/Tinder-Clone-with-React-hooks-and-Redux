@@ -104,14 +104,14 @@ const auth = (props) => {
     );
   }
 
-  let authRedirect = null;
+  /*let authRedirect = null;
   if ( props.isAuthenticated ) {
     authRedirect = <Redirect to={props.authRedirectPath} />
-  }
+  }*/
 
   return (
     <div className={classes.Auth}>
-      {authRedirect}
+      {/*{authRedirect}*/}
       {errorMessage}
       <form onSubmit={submitHandler}>
         {form}
@@ -134,8 +134,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: ( email, password, isSignup ) => dispatch( actions.auth( email, password, isSignup ) ),
-    onSetAuthRedirectPath: () => dispatch( actions.setAuthRedirectPath( '/' ) )
+    onAuth: ( email, password, isSignup ) => dispatch( actions.auth( email, password, isSignup ) )//,
+    //onSetAuthRedirectPath: () => dispatch( actions.setAuthRedirectPath( '/' ) )
   };
 };
 

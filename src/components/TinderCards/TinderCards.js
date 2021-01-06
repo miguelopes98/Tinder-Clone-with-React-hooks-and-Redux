@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import database from '../../firebase';
 
 import classes from './TinderCards.css';
 import TinderCard from 'react-tinder-card';
@@ -11,7 +10,7 @@ const TinderCards = () => {
   const [people, setPeople] = useState([]);
 
   useEffect(() => {
-    //we're grabbing the people we have in our database, instead of using the dummy data we had defined in the local state of this component
+    /*//we're grabbing the people we have in our database, instead of using the dummy data we had defined in the local state of this component
     //To grab info from a collection, we use onSnapshot, this constantly listen to a document/collection, whenever something inside that document/collection changes,
     //onSnapshot is automatically re-called so that we're grabbing the updated document/collection from firebase
     //if we had used .get() we would retrieve a single document/collection only once, if something changes in that document/collection, if we want to use the updated version of it, we have to re-call .get() manually.
@@ -39,7 +38,7 @@ const TinderCards = () => {
     return () => {
       unsubscribe();
     }
-
+*/
   }, []);
 
   return (
