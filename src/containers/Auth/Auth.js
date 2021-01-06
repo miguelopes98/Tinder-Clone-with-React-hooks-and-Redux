@@ -14,7 +14,7 @@ const auth = (props) => {
   const [ authForm, setAuthForm] = useState({
     email: {
       elementType: 'input',
-    elementConfig: {
+      elementConfig: {
         type: 'email',
         placeholder: 'Mail Address'
       },
@@ -33,9 +33,22 @@ const auth = (props) => {
         placeholder: 'Password'
       },
       value: '',
-    validation: {
+      validation: {
         required: true,
         minLength: 6
+      },
+      valid: false,
+      touched: false
+    },
+    profilePicture: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: 'Profile Picture URL'
+      },
+      value: '',
+      validation: {
+        required: true
       },
       valid: false,
       touched: false

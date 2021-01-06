@@ -8,6 +8,7 @@ import SwipeButtons from './components/SwipeButtons/SwipeButtons';
 import Chats from './components/Messaging/Chats/Chats';
 import ChatScreen from './components/Messaging/ChatScreen/ChatScreen';
 import Auth from './containers/Auth/Auth';
+import Logout from './containers/Auth/Logout/Logout';
 
 const App = () => {
   return (
@@ -34,6 +35,12 @@ const App = () => {
             {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
             <Header backButton="/"/>
             <Auth/>
+          </Route>
+
+          <Route path="/logout">
+            {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
+            <Header backButton="/"/>
+            <Logout/>
           </Route>
 
           <Route path="/">
