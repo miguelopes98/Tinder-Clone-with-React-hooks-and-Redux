@@ -4,3 +4,7 @@ export {
   authCheckState//,
   //setAuthRedirectPath
 } from './auth';
+
+export {
+  userCreate
+} from './users';

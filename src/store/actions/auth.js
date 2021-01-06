@@ -47,15 +47,20 @@ export const checkAuthTimeout = (expirationTime) => {
   };
 };*/
 
-export const auth = (email, password, profilePicture, age, firstName, lastName, isSignup) => {
+export const auth = (email, password, isSignup) => {
   return dispatch => {
     dispatch(authStart());
+
     const authData = {
       email: email,
       password: password,
       returnSecureToken: true
     };
+
+    //url if the user isn't registering, just logging in
     let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + process.env.REACT_APP_FIREBASE_API_KEY;
+
+    //url if the user is registering, signing up
     if (!isSignup) {
       url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + process.env.REACT_APP_FIREBASE_API_KEY;
     }

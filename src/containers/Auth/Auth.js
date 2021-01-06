@@ -53,8 +53,7 @@ const auth = (props) => {
       },
       value: '',
       validation: {
-        required: true,
-        isImageUrl: true
+        required: true
       },
       valid: false,
       touched: false
@@ -67,12 +66,12 @@ const auth = (props) => {
         min: '18',
         max: '99'
       },
-      value: '',
+      value: '18',
       validation: {
         required: true
       },
-      valid: false,
-      touched: false
+      valid: true,
+      touched: true
     },
     firstName: {
       elementType: 'input',
@@ -99,10 +98,46 @@ const auth = (props) => {
       },
       valid: false,
       touched: false
+    },
+    gender: {
+      elementType: 'select',
+      elementConfig: {
+        options: [
+          {value: 'Male',displayValue: 'Male'}, 
+          {value: 'Female',displayValue: 'Female'}
+        ],
+        label: "Gender"
+      },
+      value: 'Male',
+      validation: {
+        //required: true,
+        isSelect: true
+      },
+      valid: true,
+      touched: true
+    },
+    interestedIn: {
+      elementType: 'select',
+      elementConfig: {
+        options: [
+          {value: 'Males', displayValue: 'Males'}, 
+          {value: 'Females', displayValue: 'Females'}
+        ],
+        label: 'Interested In'
+      },
+      value: 'Males',
+      validation: {
+        //required: true,
+        isSelect: true
+      },
+      valid: true,
+      touched: true
     }
   })
 
   const [ isSignup, setIsSignup] = useState(true);
+
+  const [ registerFormIsValid, setRegisterFormIsValid ] = useState(false);
 
   useEffect(() => {
     /*if ( isregistering? && props.authRedirectPath !== '/' ) {
@@ -118,18 +153,34 @@ const auth = (props) => {
         touched: true
       })
     });
-    if(form == authForm) {
+
+    //if the user changed the inputs in the authForm
+    if(form === authForm) {
       setAuthForm(updatedControls);
     }
+    //if the user changed the inputs in the registerForm
     else {
       setRegisterForm(updatedControls);
+      let isValid = true;
+
+      for( let key in registerForm) {
+        isValid = registerForm[key].valid && isValid
+      }
+
+      setRegisterFormIsValid(isValid);
     }
+    
   }
 
   const submitHandler = ( event ) => {
     event.preventDefault();
-    props.onAuth( authForm.email.value, authForm.password.value, registerForm.profilePicture.value, registerForm.age.value,
-      registerForm.firstName.value, registerForm.lastName.value, isSignup );
+    //login/register the user
+    props.onAuth( authForm.email.value, authForm.password.value, isSignup );
+    //if the user is registering, then also create a user object to add to the users collection on firebase so we can start showing this user to other people
+    if(isSignup){
+      props.onUserCreate( registerForm.profilePicture.value, registerForm.age.value,
+        registerForm.firstName.value, registerForm.lastName.value, registerForm.gender.value, registerForm.interestedIn.value );
+    }
   }
 
   const switchAuthModeHandler = () => {
@@ -175,6 +226,7 @@ const auth = (props) => {
 
     registerInfo = registerFormElemArray.map( registerFormElem => (
       <Input
+        label={registerFormElem.config.elementConfig.label}
         key={registerFormElem.id}
         elementType={registerFormElem.config.elementType}
         elementConfig={registerFormElem.config.elementConfig}
@@ -186,15 +238,18 @@ const auth = (props) => {
     ));
   };
 
-  if ( props.loading ) {
+  if ( props.loadingAuth || props.loadingUserCreation ) {
     form = <Spinner />
   }
 
   let errorMessage = null;
 
-  if ( props.error ) {
+  if ( props.errorAuth || props.errorUserCreation ) {
     errorMessage = (
-      <p>{props.error.message}</p>
+      <React.Fragment>
+        <p>{props.errorAuth ? props.errorAuth.message : null}</p>
+        <p>{props.errorUserCreation ? props.errorUserCreation.message : null}</p>
+      </React.Fragment>
     );
   }
 
@@ -210,7 +265,7 @@ const auth = (props) => {
       <form onSubmit={submitHandler}>
         {form}
         {registerInfo}
-        <Button btnType="Success">SUBMIT</Button>
+        <Button btnType="Success" disabled={!registerFormIsValid}>SUBMIT</Button>
       </form>
       <Button
         clicked={switchAuthModeHandler}
@@ -221,8 +276,10 @@ const auth = (props) => {
 
 const mapStateToProps = state => {
   return {
-    loading: state.auth.loading,
-    error: state.auth.error,
+    loadingAuth: state.auth.loading,
+    errorAuth: state.auth.error,
+    loadingUserCreation: state.users.loading,
+    errorUserCreation: state.users.error,
     isAuthenticated: state.auth.token !== null//,
     //authRedirectPath: state.auth.authRedirectPath
   };
@@ -230,8 +287,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: ( email, password, profilePicture, age, firstName, lastName, isSignup ) => dispatch( actions.auth( email, password, profilePicture, age, firstName, lastName, isSignup ) )//,
+    onAuth: ( email, password, isSignup ) => dispatch( actions.auth( email, password, isSignup ) ),
     //onSetAuthRedirectPath: () => dispatch( actions.setAuthRedirectPath( '/' ) )
+    onUserCreate: ( profilePicture, age, firstName, lastName, gender, interestedIn ) => dispatch( actions.userCreate( profilePicture, age, firstName, lastName, gender, interestedIn ) )
   };
 };
 
