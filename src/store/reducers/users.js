@@ -4,7 +4,8 @@ import { updateObject } from '../../sharedFunctions/utilityFunctions';
 const initialState = {
     userId: null,
     error: null,
-    loading: false
+    loading: false,
+    usersToShow: []
 };
 
 const fetchUsersStart = ( state, action ) => {
@@ -13,7 +14,7 @@ const fetchUsersStart = ( state, action ) => {
 
 const fetchUsersSuccess = ( state, action ) => {
   return updateObject( state, {
-      //orders: action.orders,
+      usersToShow: action.usersToShow,
       loading: false
   } );
 };

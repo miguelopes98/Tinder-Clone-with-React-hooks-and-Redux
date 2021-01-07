@@ -103,7 +103,11 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
             age: age,
             profilePicture: profilePicture,
             gender: gender,
-            interestedIn: interestedIn
+            interestedIn: interestedIn,
+            disliked: {},
+            liked: {},
+            dislikedBy: {},
+            likedBy: {}
           }
           console.log(userData);
   

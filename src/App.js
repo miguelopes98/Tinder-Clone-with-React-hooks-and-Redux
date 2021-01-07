@@ -1,5 +1,6 @@
 import React from 'react';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import { Switch, Route, withRouter} from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import classes from './App.css';
 import Header from './components/Navbar/Header';
@@ -9,12 +10,11 @@ import Chats from './components/Messaging/Chats/Chats';
 import ChatScreen from './components/Messaging/ChatScreen/ChatScreen';
 import Auth from './containers/Auth/Auth';
 import Logout from './containers/Auth/Logout/Logout';
+import * as actions from './store/actions/index';
 
 const App = () => {
   return (
     <div className={classes.App}>
-
-      <Router>
 
         <Switch>
 
@@ -54,9 +54,21 @@ const App = () => {
         </Switch>
 
         {/*Individual chat screen*/}
-      </Router>
+
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.token !== null
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTryAutoSignup: () => dispatch( actions.authCheckState() )
+  };
+};
+
+export default withRouter( connect( mapStateToProps, mapDispatchToProps )( App ) );

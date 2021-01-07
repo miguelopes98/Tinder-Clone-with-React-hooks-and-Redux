@@ -120,12 +120,12 @@ const auth = (props) => {
       elementType: 'select',
       elementConfig: {
         options: [
-          {value: 'Males', displayValue: 'Males'}, 
-          {value: 'Females', displayValue: 'Females'}
+          {value: 'Male', displayValue: 'Male'}, 
+          {value: 'Female', displayValue: 'Female'}
         ],
         label: 'Interested In'
       },
-      value: 'Males',
+      value: 'Male',
       validation: {
         //required: true,
         isSelect: true
@@ -250,7 +250,7 @@ const auth = (props) => {
   }
 
   let authRedirect = null;
-  if ( props.isAuthenticated ) {
+  if ( props.isAuthenticated && props.loadingUserCreation === false ) {
     authRedirect = <Redirect to="/" />
   }
 
