@@ -104,10 +104,11 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
             profilePicture: profilePicture,
             gender: gender,
             interestedIn: interestedIn,
-            disliked: {},
-            liked: {},
-            dislikedBy: {},
-            likedBy: {}
+            //we gotta put exists: true so that these fields aren't empty, empty fields are automatically removed by firebase, which we don't want
+            disliked: {exists: true},
+            liked: {exists: true},
+            dislikedBy: {exists: true},
+            likedBy: {exists: true}
           }
           console.log(userData);
   

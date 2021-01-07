@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
 
 import classes from './TinderCards.css';
@@ -14,11 +14,12 @@ const TinderCards = (props) => {
     }
   }, []);
 
-  const [lastDirection, setLastDirection] = useState()
-
   const swiped = (direction, userId) => {
     console.log('removing: ' + userId);
-    setLastDirection(direction);
+    props.onUserSwiped(direction, userId);
+
+    //everytime we swipe we want to grab the people we show again so that it is always updated
+    props.onFetchUsers(props.token, props.userId);
   }
 
   return (
@@ -48,7 +49,7 @@ const TinderCards = (props) => {
           );
         })}
       </div>
-      {lastDirection ? <h2 className='infoText'>You swiped {lastDirection}</h2> : <h2 className='infoText' />}
+      {props.lastDirection ? <p className='infoText'>You swiped {props.lastDirection}</p> : <p className='infoText' />}
     </div>
   );
 
@@ -60,13 +61,15 @@ const mapStateToProps = state => {
     loading: state.users.loading,
     token: state.auth.token,
     userId: state.auth.userId,
-    loadingUserCreation: state.auth.loadingUserCreation
+    loadingUserCreation: state.auth.loadingUserCreation,
+    lastDirection: state.users.lastDirection
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchUsers: (token, userId) => dispatch( actions.fetchUsers(token, userId) )
+    onFetchUsers: (token, userId) => dispatch( actions.fetchUsers(token, userId)),
+    onUserSwiped: (direction, userId) => dispatch( actions.userSwiped(direction, userId))
   };
 };
 

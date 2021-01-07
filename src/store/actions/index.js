@@ -6,6 +6,6 @@ export {
 } from './auth';
 
 export {
-  userCreate,
-  fetchUsers
+  fetchUsers,
+  userSwiped
 } from './users';
