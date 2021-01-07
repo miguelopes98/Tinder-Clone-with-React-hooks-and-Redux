@@ -1,15 +1,19 @@
 import React, {useState, useEffect} from 'react';
+import { connect } from 'react-redux';
 
 import classes from './TinderCards.css';
 import TinderCard from 'react-tinder-card';
+import * as actions from '../../store/actions/index';
 
-const TinderCards = () => {
+const TinderCards = (props) => {
 
   /* since we're not allowing users to be created yet, we're just going to use
   dummy data that we created here to have 'fake users' to swipe on*/
   const [people, setPeople] = useState([]);
 
   useEffect(() => {
+    console.log(props.userId);
+    props.onFetchUsers(props.token, props.userId);
     /*//we're grabbing the people we have in our database, instead of using the dummy data we had defined in the local state of this component
     //To grab info from a collection, we use onSnapshot, this constantly listen to a document/collection, whenever something inside that document/collection changes,
     //onSnapshot is automatically re-called so that we're grabbing the updated document/collection from firebase
@@ -74,4 +78,19 @@ const TinderCards = () => {
 
 };
 
-export default TinderCards;
+const mapStateToProps = state => {
+  return {
+    users: state.users.users,
+    loading: state.users.loading,
+    token: state.auth.token,
+    userId: state.auth.userId
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onFetchUsers: (token, userId) => dispatch( actions.fetchUsers(token, userId) )
+  };
+};
+
+export default connect( mapStateToProps, mapDispatchToProps )(TinderCards);

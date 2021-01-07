@@ -7,30 +7,26 @@ const initialState = {
     loading: false
 };
 
-const userCreatingStart = ( state, action ) => {
-    return updateObject( state, { error: null, loading: true } );
+const fetchUsersStart = ( state, action ) => {
+  return updateObject( state, { loading: true } );
 };
 
-const userCreatingSuccess = (state, action) => {
-    return updateObject( state, {
-        userId: action.userId,
-        error: null,
-        loading: false
-     } );
+const fetchUsersSuccess = ( state, action ) => {
+  return updateObject( state, {
+      //orders: action.orders,
+      loading: false
+  } );
 };
 
-const userCreatingFail = (state, action) => {
-    return updateObject( state, {
-        error: action.error,
-        loading: false
-    });
+const fetchUsersFail = ( state, action ) => {
+  return updateObject( state, { loading: false } );
 };
 
 const reducer = ( state = initialState, action ) => {
   switch ( action.type ) {
-    case actionTypes.USER_CREATING_START: return userCreatingStart(state, action);
-    case actionTypes.USER_CREATING_SUCCESS: return userCreatingSuccess(state, action);
-    case actionTypes.USER_CREATING_FAIL: return userCreatingFail(state, action);
+    case actionTypes.FETCH_USERS_START: return fetchUsersStart( state, action );
+    case actionTypes.FETCH_USERS_SUCCESS: return fetchUsersSuccess( state, action );
+    case actionTypes.FETCH_USERS_FAIL: return fetchUsersFail( state, action );
     default:
       return state;
   }

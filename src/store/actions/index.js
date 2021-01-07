@@ -6,5 +6,6 @@ export {
 } from './auth';
 
 export {
-  userCreate
+  userCreate,
+  fetchUsers
 } from './users';

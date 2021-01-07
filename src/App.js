@@ -3,7 +3,7 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 import classes from './App.css';
 import Header from './components/Navbar/Header';
-import TinderCards from './components/TinderCards/TinderCards';
+import TinderCards from './containers/TinderCards/TinderCards';
 import SwipeButtons from './components/SwipeButtons/SwipeButtons';
 import Chats from './components/Messaging/Chats/Chats';
 import ChatScreen from './components/Messaging/ChatScreen/ChatScreen';

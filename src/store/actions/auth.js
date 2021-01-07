@@ -47,7 +47,27 @@ export const checkAuthTimeout = (expirationTime) => {
   };
 };*/
 
-export const auth = (email, password, isSignup) => {
+export const userCreatingStart = () => {
+  return {
+    type: actionTypes.USER_CREATING_START
+  };
+};
+
+export const userCreatingSuccess = (userId) => {
+  return {
+    type: actionTypes.USER_CREATING_SUCCESS,
+    userId: userId
+  };
+};
+
+export const userCreatingFail = (error) => {
+  return {
+    type: actionTypes.USER_CREATING_FAIL,
+    error: error
+  };
+};
+
+export const auth = (email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn ) => {
   return dispatch => {
     dispatch(authStart());
 
@@ -64,18 +84,46 @@ export const auth = (email, password, isSignup) => {
     if (!isSignup) {
       url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + process.env.REACT_APP_FIREBASE_API_KEY;
     }
+
+    //creating the user account itself
     axios.post(url, authData)
       .then(response => {
         const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
         localStorage.setItem('token', response.data.idToken);
         localStorage.setItem('expirationDate', expirationDate);
         localStorage.setItem('userId', response.data.localId);
+
+        //now we're going to take the chance to create the user profile if the user was signing up and not just logging in
+        if(isSignup){
+          const userId = localStorage.getItem("userId");
+          const userData = {
+            userId: userId,
+            firstName: firstName,
+            lastName: lastName,
+            age: age,
+            profilePicture: profilePicture,
+            gender: gender,
+            interestedIn: interestedIn
+          }
+          console.log(userData);
+  
+          axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users.json', userData)
+            .then(response => {
+              dispatch(userCreatingSuccess(userData.userId));
+            })
+            .catch(err => {
+              dispatch(userCreatingFail(err.response.data.error));
+            })
+        }
+        
         dispatch(authSuccess(response.data.idToken, response.data.localId));
         dispatch(checkAuthTimeout(response.data.expiresIn));
       })
       .catch(err => {
         dispatch(authFail(err.response.data.error));
       });
+
+      
   };
 };
 

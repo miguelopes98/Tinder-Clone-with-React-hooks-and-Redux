@@ -175,12 +175,8 @@ const auth = (props) => {
   const submitHandler = ( event ) => {
     event.preventDefault();
     //login/register the user
-    props.onAuth( authForm.email.value, authForm.password.value, isSignup );
-    //if the user is registering, then also create a user object to add to the users collection on firebase so we can start showing this user to other people
-    if(isSignup){
-      props.onUserCreate( registerForm.profilePicture.value, registerForm.age.value,
-        registerForm.firstName.value, registerForm.lastName.value, registerForm.gender.value, registerForm.interestedIn.value );
-    }
+    props.onAuth( authForm.email.value, authForm.password.value, isSignup, registerForm.profilePicture.value, registerForm.age.value,
+      registerForm.firstName.value, registerForm.lastName.value, registerForm.gender.value, registerForm.interestedIn.value );
   }
 
   const switchAuthModeHandler = () => {
@@ -265,7 +261,7 @@ const auth = (props) => {
       <form onSubmit={submitHandler}>
         {form}
         {registerInfo}
-        <Button btnType="Success" disabled={!registerFormIsValid}>SUBMIT</Button>
+        <Button btnType="Success" disabled={isSignup ? !registerFormIsValid : false}>SUBMIT</Button>
       </form>
       <Button
         clicked={switchAuthModeHandler}
@@ -278,18 +274,17 @@ const mapStateToProps = state => {
   return {
     loadingAuth: state.auth.loading,
     errorAuth: state.auth.error,
-    loadingUserCreation: state.users.loading,
-    errorUserCreation: state.users.error,
-    isAuthenticated: state.auth.token !== null//,
+    loadingUserCreation: state.auth.loadingUserCreation,
+    errorUserCreation: state.auth.errorUserCreation,
+    isAuthenticated: state.auth.token !== null,
+    userId: state.auth.userId//,
     //authRedirectPath: state.auth.authRedirectPath
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: ( email, password, isSignup ) => dispatch( actions.auth( email, password, isSignup ) ),
-    //onSetAuthRedirectPath: () => dispatch( actions.setAuthRedirectPath( '/' ) )
-    onUserCreate: ( profilePicture, age, firstName, lastName, gender, interestedIn ) => dispatch( actions.userCreate( profilePicture, age, firstName, lastName, gender, interestedIn ) )
+    onAuth: ( email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn ) => dispatch( actions.auth( email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn ) )
   };
 };
 
