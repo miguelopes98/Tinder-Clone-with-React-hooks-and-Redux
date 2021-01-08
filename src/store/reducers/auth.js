@@ -7,7 +7,8 @@ const initialState = {
     error: null,
     loading: false,
     loadingUserCreation: false,
-    errorUserCreation: false//,
+    errorUserCreation: false,
+    firstTimeLogin: false
     //authRedirectPath: '/'
 };
 
@@ -32,7 +33,7 @@ const authFail = (state, action) => {
 };
 
 const authLogout = (state, action) => {
-    return updateObject(state, { token: null, userId: null });
+    return updateObject(state, { token: null, userId: null, firstTimeLogin: false });
 };
 
 const userCreatingStart = ( state, action ) => {
@@ -40,6 +41,7 @@ const userCreatingStart = ( state, action ) => {
 };
 
 const userCreatingSuccess = (state, action) => {
+  console.log("userCreating reducer " + action.userId);
   return updateObject( state, {
       userId: action.userId,
       errorUserCreation: null,

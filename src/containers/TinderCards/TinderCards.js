@@ -17,7 +17,7 @@ const TinderCards = (props) => {
     //when we added the userId as a dependency, this would run the first time and fail for the same reason and then it would run a second time when the useEffect hook on the app component ran
     //and we would actually get a userId, this component should re render if the props changed and therefore this useEffect hook should run again, but this wasn't happening
     //i dont know why, when I added this as a dependency, it runs when the userId changes, even though it should regardless since it is a prop.
-  },[props.userId]);
+  },[props.loadingUserCreation, props.userId]);
 
   const swiped = (direction, userId) => {
     console.log('removing: ' + userId);

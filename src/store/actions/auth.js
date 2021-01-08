@@ -54,6 +54,7 @@ export const userCreatingStart = () => {
 };
 
 export const userCreatingSuccess = (userId) => {
+  console.log("userCreating Success action " + userId);
   return {
     type: actionTypes.USER_CREATING_SUCCESS,
     userId: userId
@@ -95,6 +96,7 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
 
         //now we're going to take the chance to create the user profile if the user was signing up and not just logging in
         if(isSignup){
+          dispatch(userCreatingStart());
           const userId = localStorage.getItem("userId");
           const userData = {
             userId: userId,
@@ -111,7 +113,6 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
             likedBy: {exists: true},
             matches: {exists: true}
           }
-          console.log(userData);
   
           axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users.json', userData)
             .then(response => {
