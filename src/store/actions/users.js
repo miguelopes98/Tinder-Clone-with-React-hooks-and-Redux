@@ -80,9 +80,17 @@ export const fetchUsers = (token, userId) => {
                 //if the logged in user has matched the user, then we return false and the filter function removes this user from the array
                 return (user.matches.hasOwnProperty(userId) === false);
               });
+
+              //filtering the users to remove our selves if we're interested in the same gender as we are, so we don't show ourselves to ourselves (if we're gay, we're male and looking for males
+              //or females looking for females, so we don't want to get our profile to swipe on)
+              const finalUsers = usersFinalArray.filter( user => {
+                //if the logged in user isn't the same as the user, then we return true and the filter function keeps this user in the array
+                //if the logged in user is the same as the user, then we return false and the filter function removes this user from the array
+                return (user.userId !== userId);
+              });
               
 
-              dispatch(fetchUsersSuccess(usersFinalArray));
+              dispatch(fetchUsersSuccess(finalUsers));
             })
             .catch( err => {
               dispatch(fetchUsersFail(err));
