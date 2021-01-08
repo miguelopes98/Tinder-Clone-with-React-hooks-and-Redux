@@ -12,12 +12,17 @@ const TinderCards = (props) => {
     if(props.loadingUserCreation === false) {
       props.onFetchUsers(props.token, props.userId);
     }
-  }, []);
+    //we had to add userId to the dependencies, because this was running before the useEffect hook on the app component was running for whatever reason
+    //so we were fetching users before we reloggedin the user after he refreshed the app, this would fail because we would try to fetch users when no one was logged in, it would fail obviously
+    //when we added the userId as a dependency, this would run the first time and fail for the same reason and then it would run a second time when the useEffect hook on the app component ran
+    //and we would actually get a userId, this component should re render if the props changed and therefore this useEffect hook should run again, but this wasn't happening
+    //i dont know why, when I added this as a dependency, it runs when the userId changes, even though it should regardless since it is a prop.
+  },[props.userId]);
 
   const swiped = (direction, userId) => {
     console.log('removing: ' + userId);
     props.onUserSwiped(direction, userId);
-
+    
     //everytime we swipe we want to grab the people we show again so that it is always updated
     props.onFetchUsers(props.token, props.userId);
   }

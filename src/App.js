@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Switch, Route, withRouter} from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -12,7 +12,12 @@ import Auth from './containers/Auth/Auth';
 import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
 
-const App = () => {
+const App = (props) => {
+
+  useEffect(() => {
+    props.onTryAutoSignup();
+  }, [props.onTryAutoSignup]);
+
   return (
     <div className={classes.App}>
 
