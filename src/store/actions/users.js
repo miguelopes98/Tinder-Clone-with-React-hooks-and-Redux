@@ -56,11 +56,34 @@ export const fetchUsers = (token, userId) => {
                 });
               }
 
-              const filteredUsers = fetchedUsers.filter(user => {
+              //filtering the users to only have users that are interested in the same gender as the logged in user
+              const interestedUsers = fetchedUsers.filter(user => {
                 return (user.interestedIn === loggedInUser[0].gender);
               });
 
-              dispatch(fetchUsersSuccess(filteredUsers));
+              //filtering the users to remove the users that already swiped left on the logged in user.
+              const filteredUsers = interestedUsers.filter( interestedUser => {
+                //if the user hasn't disliked the logged in user, then we return true and the filter function keeps this user in the array
+                //if the user has disliked the logged in user, then we return false and the filter function removes this user from the array
+                return (interestedUser.disliked.hasOwnProperty(userId) === false);
+              });
+
+              //filtering the user to remove the users that the logged in user already swiped left on
+              const filteredUsersArray = filteredUsers.filter( filteredUser => {
+                //if the logged in user hasn't disliked user, then we return true and the filter function keeps this user in the array
+                //if the logged in user has disliked user, then we return false and the filter function removes this user from the array
+                return (filteredUser.dislikedBy.hasOwnProperty(userId) === false);
+              });
+
+              //filtering the users to remove the users that the logged in user already matched with
+              const usersFinalArray = filteredUsersArray.filter( user => {
+                //if the logged in user hasn't matched the user, then we return true and the filter function keeps this user in the array
+                //if the logged in user has matched the user, then we return false and the filter function removes this user from the array
+                return (user.matches.hasOwnProperty(userId) === false);
+              });
+              
+
+              dispatch(fetchUsersSuccess(usersFinalArray));
             })
             .catch( err => {
               dispatch(fetchUsersFail(err));
