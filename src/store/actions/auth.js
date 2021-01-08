@@ -108,7 +108,8 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
             disliked: {exists: true},
             liked: {exists: true},
             dislikedBy: {exists: true},
-            likedBy: {exists: true}
+            likedBy: {exists: true},
+            matches: {exists: true}
           }
           console.log(userData);
   

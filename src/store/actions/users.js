@@ -81,6 +81,73 @@ export const userSwipedDirection = (direction) => {
   };
 };
 
+export const match = (userId, swipedUserId, direction) => {
+  return dispatch => {
+    //getting the user that was swiped on so that we can grab the firebase key and save it
+
+    const queryParams = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + swipedUserId + '"';
+    axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
+    .then( res => {
+      //even though we are only grabbing one user for sure, we still don't have a way to know the firebase key that comes in the response.
+      //that is why we still loop through something that we know that has only one key, that is why we still keep an array, just for good practice
+      const fetchedUsers = [];
+      for ( let key in res.data ) {
+        fetchedUsers.push( {
+          ...res.data[key],
+          id: key
+        });
+      }
+
+      //now that we have the key saved in id, we can use the patch request to update the dislikedBy filed and use the key in the url
+      //we will add the id of the logged in user to the matches field.
+      const urlParams = fetchedUsers[0].id 
+      axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + urlParams + '/matches.json', {[userId]: true})
+      .then( response => {
+
+        //now we need to add the match to the logged in user, for that we need the key to the object that represents the logged in user,
+        //for that we need to grab the logged in user
+        const queryParams1 = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + userId + '"';
+        axios.get('https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams1)
+        .then( res => {
+
+          const authenticatedUser = [];
+          for ( let key in res.data ) {
+            authenticatedUser.push( {
+              ...res.data[key],
+              id: key
+            });
+          }
+
+          //now that we have the firebase key, we need to add the match to the logged in user
+          const urlParams1 = authenticatedUser[0].id;
+          axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + urlParams1 + '/matches.json', {[swipedUserId]: true})
+
+            .then( response => {
+              console.log("THIS RAN");
+              dispatch(userSwipedDirection(direction));
+            })
+            .catch(err => {
+              dispatch(fetchUsersFail(err));
+            })
+
+        })
+        .catch(err => {
+          dispatch(fetchUsersFail(err));
+        })
+
+      })
+      .catch(err => {
+        dispatch(fetchUsersFail(err));
+      })
+
+    })
+    .catch(err => {
+      dispatch(fetchUsersFail(err));
+    })
+  }
+    
+}
+
 export const userSwiped = (direction, swipedUserId) => {
   return dispatch => {
 
@@ -194,7 +261,18 @@ export const userSwiped = (direction, swipedUserId) => {
                   axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + urlParams1 + '/liked.json', {[swipedUserId]: true})
 
                     .then( response => {
-                      dispatch(userSwipedDirection(direction));
+
+                      //now we want to check if the logged in user swiped right on someone, we want to check if the logged in user was already swiped right by the person he swiped right on
+                      //if it has, then we want to add the match to both of them
+                      if(authenticatedUser[0].likedBy.hasOwnProperty(swipedUserId) === true){
+                        dispatch(match(userId, swipedUserId, direction));
+                      }
+                      
+                      //if it hasn't then we just proceed normally
+                      else{
+                        dispatch(userSwipedDirection(direction));
+                      }
+
                     })
                     .catch(err => {
                       dispatch(fetchUsersFail(err));
