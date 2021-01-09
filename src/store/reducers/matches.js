@@ -12,6 +12,7 @@ const fetchMatchesStart = ( state ) => {
 };
 
 const fetchMatchesSuccess = ( state, action ) => {
+  console.log(action.usersToShow);
   return updateObject( state, {
       usersToShow: action.usersToShow,
       loading: false

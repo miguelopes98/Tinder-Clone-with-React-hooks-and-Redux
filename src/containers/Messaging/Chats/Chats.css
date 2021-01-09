@@ -39,7 +39,7 @@ h1 {
 }
 
 .container {
-  height: 120px;
+  height: 130px;
   overflow: hidden !important;
   overflow-x: scroll !important;
   padding-left: 10px;

@@ -26,7 +26,7 @@ const App = (props) => {
         <Switch>
 
           {/*we later need to change this to be person id*/}
-          <Route path="/chat/:person">
+          <Route path="/chat/:userId">
             {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
             <Header backButton="/chat"/>
             <ChatScreen/>
