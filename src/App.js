@@ -6,11 +6,13 @@ import classes from './App.css';
 import Header from './components/Navbar/Header';
 import TinderCards from './containers/TinderCards/TinderCards';
 import SwipeButtons from './components/SwipeButtons/SwipeButtons';
-import Chats from './components/Messaging/Chats/Chats';
-import ChatScreen from './components/Messaging/ChatScreen/ChatScreen';
+import Chats from './containers/Messaging/Chats/Chats';
+import ChatScreen from './containers/Messaging/ChatScreen/ChatScreen';
 import Auth from './containers/Auth/Auth';
 import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
+
+
 
 const App = (props) => {
 

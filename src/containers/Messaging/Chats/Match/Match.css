@@ -1,0 +1,23 @@
+/*.matchImage{
+  margin-right: 20px;
+  height: 100px;
+}*/
+.matchImage{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 95px;
+  width: 95px;
+  border-bottom: 1px solid #fafafa;
+  border-radius: 50%;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.name{
+  color: black;
+  font-size: small;
+  text-align: center;
+  margin-top: 10px;
+}

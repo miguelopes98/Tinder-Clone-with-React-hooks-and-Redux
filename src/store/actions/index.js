@@ -9,3 +9,7 @@ export {
   fetchUsers,
   userSwiped
 } from './users';
+
+export {
+  fetchMatches
+} from './matches';
