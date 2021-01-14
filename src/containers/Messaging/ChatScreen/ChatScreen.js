@@ -1,54 +1,53 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import classes from './ChatScreen.css';
 import Avatar from '@material-ui/core/Avatar';
+import * as actions from '../../../store/actions/index';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 const ChatScreen = (props) => {
 
   const [input, setInput] = useState('');
 
-  //the first 2 messages are from astrid and the last one is from the logged in user that is talking to her
-  const [messages, setMessages] = useState([
-    {
-      name: "Àstrid Bergès-Frisbey",
-      text: "Heyy whats up?",
-      image: "https://i.mdel.net/i/db/2014/10/304436/304436-800w.jpg"
-    },
-    {
-      name: "Àstrid Bergès-Frisbey",
-      text: "You looking fine",
-      image: "https://i.mdel.net/i/db/2014/10/304436/304436-800w.jpg"
-    },
-    {
-      text: "Heyy whats up?"
-    }
-  ])
-
   //accessing url params so we can grab the user id
   const params = useParams();
-  console.log(params);
+
+  useEffect(() => {
+    //params.userId is the id passed as a url parameter which is the id of the recipient
+    if(props.userId){
+      props.onFetchMessages(props.userId, params.userId);
+    }
+    
+  }, [props.onFetchMessages, props.userId, params.userId]);
 
   const sendHandler = (event) => {
     event.preventDefault();
 
     //need to change the state in the reducer instead of this
-    setMessages([...messages, { text: input}]);
+    //setMessages([...messages, { text: input}]);
 
     setInput("");
   }
 
+  if(props.loadingSendMessage || props.loadingFetchMessages || !props.userId || !props.recipientInfo){
+    return (
+      <Spinner/>
+    );
+  }
+
   return (
     <div className={classes.chatScreen}>
-      <p className={classes.timestamp}>YOU MATCHED WITH ASTRID ON 10/08/2020</p>
-      {messages.map( (message, index) => {
+      <p className={classes.timestamp}>You matched with {props.recipientInfo.name} on 10/08/2020</p>
+      {props.messagesToShow.map( (message, index) => {
 
         let text = (
           <div className={classes.message}>
             <Avatar
               className={classes.image}
-              alt={message.name}
-              src={message.image}
+              alt={props.recipientInfo.name}
+              src={props.recipientInfo.profilePicture}
             />
             <p className={classes.text}>{message.text}</p>
           </div>
@@ -82,4 +81,21 @@ const ChatScreen = (props) => {
   );
 };
 
-export default ChatScreen;
+const mapStateToProps = state => {
+  return {
+    loadingLastMessage: state.messages.loadingLastMessage,
+    loadingFetchMessages: state.messages.loadingFetchMessages,
+    loadingSendMessage: state.messages.loadingSendMessage,
+    messagesToShow: state.messages.messagesToShow,
+    userId: state.auth.userId,
+    recipientInfo: state.messages.recipientInfo
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onFetchMessages: (userId, recipientUserId) => dispatch(actions.fetchMessages(userId, recipientUserId))
+  };
+};
+
+export default connect( mapStateToProps, mapDispatchToProps )(ChatScreen);

@@ -10,7 +10,8 @@ const initialState = {
     loadingFetchMessages: false,
     loadingSendMessage: false,
     messagesToShow: [],
-    lastMessagesToShow: []
+    lastMessagesToShow: [],
+    recipientInfo: null
 };
 
 const fetchMessagesStart = ( state, action ) => {
@@ -21,7 +22,8 @@ const fetchMessagesSuccess = ( state, action ) => {
   return updateObject( state, {
       messagesToShow: action.messagesToShow,
       loadingFetchMessages: false,
-      errorFetchMessages: false
+      errorFetchMessages: false,
+      recipientInfo: action.recipientInfo
   } );
 };
 

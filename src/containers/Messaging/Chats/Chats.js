@@ -12,7 +12,7 @@ const Chats = (props) => {
   useEffect(() => {
     if(props.userId) {
       props.onFetchMatches(props.userId);
-      props.onFecthLastMessages(props.userId);
+      props.onFetchLastMessages(props.userId);
     }
   }, [props.onFetchMatches, props.onFecthLastMessages, props.userId]);
 
@@ -84,7 +84,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchMatches: (userId) => dispatch( actions.fetchMatches(userId)),
-    onFecthLastMessages: (userId) => dispatch(actions.fetchLastMessages(userId))
+    onFetchLastMessages: (userId) => dispatch(actions.fetchLastMessages(userId))
   };
 };
 
