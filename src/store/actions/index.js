@@ -13,3 +13,9 @@ export {
 export {
   fetchMatches
 } from './matches';
+
+export {
+  fetchLastMessages,
+  fetchMessages,
+  sendMessage
+} from './messages';

@@ -25,6 +25,7 @@ const ChatScreen = (props) => {
     }
   ])
 
+  //accessing url params so we can grab the user id
   const params = useParams();
   console.log(params);
 

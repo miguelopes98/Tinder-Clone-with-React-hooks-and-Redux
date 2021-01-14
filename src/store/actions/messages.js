@@ -2,6 +2,75 @@ import axios from 'axios';
 
 import * as actionTypes from './actionTypes';
 
+export const fetchLastMessagesSuccess = ( messagesToShow ) => {
+  return {
+      type: actionTypes.FETCH_LAST_MESSAGES_SUCCESS,
+      messagesToShow: messagesToShow
+  };
+};
+
+export const fetchLastMessagesFail = ( error ) => {
+  return {
+      type: actionTypes.FETCH_LAST_MESSAGES_FAIL,
+      error: error
+  };
+};
+
+export const fetchLastMessagesStart = () => {
+  return {
+      type: actionTypes.FETCH_LAST_MESSAGES_START
+  };
+};
+
+export const fetchLastMessages = (userId) => {
+  return dispatch => {
+    dispatch(fetchLastMessagesStart());
+    //grabbing profile data associated to the logged in user
+    const queryParams = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + userId + '"';
+    axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
+    .then(res => {
+      const fetchedUser = [];
+      //even though we are only grabbing one user for sure, we still don't have a way to know the firebase key that comes in the response.
+      //that is why we still loop through something that we know that has only one key, that is why we still keep an array, just for good practice
+      for ( let key in res.data ) {
+        fetchedUser.push( {
+          ...res.data[key],
+          id: key
+        });
+      }
+      const loggedInUser = fetchedUser[0];
+
+      //this will contain a list of objects with the matched user's info and the last message of the conversation with him.
+      const messagesToShow = [];
+
+      //this will contain the info of each object we're going to push to the array above
+      let userInfo = null;
+
+      for( let id in loggedInUser.chats){
+        //just so we don't grab the 'exists': true key-value pair
+        if( id !== 'exists'){
+          userInfo = {
+            name: loggedInUser.chats.id.firstName,
+            profilePicture: loggedInUser.chats.id.profilePicture,
+            lastMessage: loggedInUser.chats.id.messages.lastMessage
+          }
+
+          messagesToShow.push(userInfo);
+        }
+      }
+
+      dispatch(fetchLastMessagesSuccess(messagesToShow))
+
+    })
+    .catch(err => {
+      dispatch(fetchLastMessagesFail(err));
+    })
+  };
+};
+
+
+
+
 export const fetchMessagesSuccess = ( messagesToShow ) => {
   return {
       type: actionTypes.FETCH_MESSAGES_SUCCESS,
@@ -22,9 +91,9 @@ export const fetchMessagesStart = () => {
   };
 };
 
-export const fetchMessages = (token, userId) => {
+export const fetchMessages = (userId) => {
   return dispatch => {
-    dispatch(fetchUsersStart());
+    dispatch(fetchMessagesStart());
     //grabbing profile data associated to the logged in user
     const queryParams = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + userId + '"';
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
@@ -39,6 +108,8 @@ export const fetchMessages = (token, userId) => {
         });
       }
       const loggedInUser = fetchedUser;
+
+      const messagesToShow = [];
 
       // grabbing the users that have the gender the logged in user is interested in
       const queryParams = /*'?auth=' + token + '&*/'?orderBy="gender"&equalTo="' + loggedInUser[0].interestedIn + '"';
@@ -55,50 +126,134 @@ export const fetchMessages = (token, userId) => {
             });
           }
 
-          //filtering the users to only have users that are interested in the same gender as the logged in user
-          const interestedUsers = fetchedUsers.filter(user => {
-            return (user.interestedIn === loggedInUser[0].gender);
-          });
-
-          //filtering the users to remove the users that already swiped left on the logged in user.
-          const filteredUsers = interestedUsers.filter( interestedUser => {
-            //if the user hasn't disliked the logged in user, then we return true and the filter function keeps this user in the array
-            //if the user has disliked the logged in user, then we return false and the filter function removes this user from the array
-            return (interestedUser.disliked.hasOwnProperty(userId) === false);
-          });
-
-          //filtering the user to remove the users that the logged in user already swiped left on
-          const filteredUsersArray = filteredUsers.filter( filteredUser => {
-            //if the logged in user hasn't disliked user, then we return true and the filter function keeps this user in the array
-            //if the logged in user has disliked user, then we return false and the filter function removes this user from the array
-            return (filteredUser.dislikedBy.hasOwnProperty(userId) === false);
-          });
-
-          //filtering the users to remove the users that the logged in user already matched with
-          const usersFinalArray = filteredUsersArray.filter( user => {
-            //if the logged in user hasn't matched the user, then we return true and the filter function keeps this user in the array
-            //if the logged in user has matched the user, then we return false and the filter function removes this user from the array
-            return (user.matches.hasOwnProperty(userId) === false);
-          });
-
-          //filtering the users to remove our selves if we're interested in the same gender as we are, so we don't show ourselves to ourselves (if we're gay, we're male and looking for males
-          //or females looking for females, so we don't want to get our profile to swipe on)
-          const finalUsers = usersFinalArray.filter( user => {
-            //if the logged in user isn't the same as the user, then we return true and the filter function keeps this user in the array
-            //if the logged in user is the same as the user, then we return false and the filter function removes this user from the array
-            return (user.userId !== userId);
-          });
+          
           
 
-          dispatch(fetchUsersSuccess(finalUsers));
+          dispatch(fetchMessagesSuccess());
         })
         .catch( err => {
-          dispatch(fetchUsersFail(err));
+          dispatch(fetchMessagesFail(err));
         });
 
     })
     .catch( err => {
-      dispatch(fetchUsersFail(err));
+      dispatch(fetchMessagesFail(err));
+    });
+  };
+};
+
+
+
+
+
+export const sendMessageSuccess = () => {
+  return {
+      type: actionTypes.SEND_MESSAGE_SUCCESS
+  };
+};
+
+export const sendMessageFail = ( error ) => {
+  return {
+      type: actionTypes.SEND_MESSAGE_FAIL,
+      error: error
+  };
+};
+
+export const sendMessageStart = () => {
+  return {
+      type: actionTypes.SEND_MESSAGE_START
+  };
+};
+
+export const sendMessage = ( recipientUserId, textSent) => {
+  return dispatch => {
+    dispatch(sendMessageStart());
+    //grabbing profile data associated to the logged in user
+    const userId = localStorage.getItem("userId");
+    const queryParams = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + userId + '"';
+    axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
+    .then( res => {
+      let fetchedUser = [];
+      //even though we are only grabbing one user for sure, we still don't have a way to know the firebase key that comes in the response.
+      //that is why we still loop through something that we know that has only one key, that is why we still keep an array, just for good practice
+      for ( let key in res.data ) {
+        fetchedUser.push( {
+          ...res.data[key],
+          id: key
+        });
+      }
+      const loggedInUser = fetchedUser[0];
+
+      //grabbing profile data of the recipient user
+      const queryParams1 = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + recipientUserId + '"';
+      axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams1)
+      .then(response => {
+
+
+        let fetchedUser = [];
+        //even though we are only grabbing one user for sure, we still don't have a way to know the firebase key that comes in the response.
+        //that is why we still loop through something that we know that has only one key, that is why we still keep an array, just for good practice
+        for ( let key in response.data ) {
+          fetchedUser.push( {
+            ...response.data[key],
+            id: key
+          });
+        }
+        const recipientUser = fetchedUser[0];
+
+        //preparing the data we want to add to the chats field of the logged in user
+        const recipientData = {
+          name: recipientUser.firstName,
+          profilePicture: recipientUser.profilePicture,
+          userId: recipientUser.userId,
+          messages: {
+            text: textSent
+          }
+        }
+
+        //now we're going to add the chat of the respective recipient user to the chats field in the logged in user
+        /* loggedInUser.id is the firebase key of the logged in user*/
+        axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/chats.json', {[recipientUserId]: recipientData})
+        .then(res => {
+
+          //now we're preparing the data to add the chat of the logged in user to the chats field of the recipient user
+          const senderData = {
+            name: loggedInUser.firstName,
+            profilePicture: loggedInUser.profilePicture,
+            userId: loggedInUser.userId,
+            messages: {
+              name: loggedInUser.firstName,
+              text: textSent
+            }
+          }
+
+          //now we're going to add the chat of the logged in user to the chats field of the recipient user
+          //recipientUser.id is the firebase key of the recipient user
+          axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/chats.json', {[loggedInUser.userId]: senderData})
+          .then(response => {
+            dispatch(sendMessageSuccess());
+          })
+          .catch(err => {
+            dispatch(sendMessageFail(err));
+          })
+
+          
+        })
+        .catch( err => {
+          dispatch(sendMessageFail(err));
+        });
+
+
+      })
+      .catch( err => {
+        dispatch(sendMessageFail(err));
+      })
+
+      
+
+    })
+    .catch( err => {
+      dispatch(sendMessageFail(err));
     });
   };
 };
