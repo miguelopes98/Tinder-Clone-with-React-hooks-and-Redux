@@ -61,21 +61,21 @@ export const fetchUsers = (token, userId) => {
           });
 
           //filtering the users to remove the users that already swiped left on the logged in user.
-          const filteredUsers = interestedUsers.filter( interestedUser => {
+          const filteredDislikedByUsers = interestedUsers.filter( interestedUser => {
             //if the user hasn't disliked the logged in user, then we return true and the filter function keeps this user in the array
             //if the user has disliked the logged in user, then we return false and the filter function removes this user from the array
             return (interestedUser.disliked.hasOwnProperty(userId) === false);
           });
 
           //filtering the user to remove the users that the logged in user already swiped left on
-          const filteredUsersArray = filteredUsers.filter( filteredUser => {
+          const filteredDislikedUsers = filteredDislikedByUsers.filter( filteredDislikedByUser => {
             //if the logged in user hasn't disliked user, then we return true and the filter function keeps this user in the array
             //if the logged in user has disliked user, then we return false and the filter function removes this user from the array
-            return (filteredUser.dislikedBy.hasOwnProperty(userId) === false);
+            return (filteredDislikedByUser.dislikedBy.hasOwnProperty(userId) === false);
           });
 
-          //filtering the users to remove the users that the logged in user already matched with
-          const usersFinalArray = filteredUsersArray.filter( user => {
+          //filtering the users to remove the users that the logged in user already matched with (shouldn't be necessary since matched users were already liked by the logged in user, but oh well)
+          const filteredMatchedUsers = filteredDislikedUsers.filter( user => {
             //if the logged in user hasn't matched the user, then we return true and the filter function keeps this user in the array
             //if the logged in user has matched the user, then we return false and the filter function removes this user from the array
             return (user.matches.hasOwnProperty(userId) === false);
@@ -83,14 +83,24 @@ export const fetchUsers = (token, userId) => {
 
           //filtering the users to remove our selves if we're interested in the same gender as we are, so we don't show ourselves to ourselves (if we're gay, we're male and looking for males
           //or females looking for females, so we don't want to get our profile to swipe on)
-          const finalUsers = usersFinalArray.filter( user => {
+          const filteredOurselvesUsers = filteredMatchedUsers.filter( user => {
             //if the logged in user isn't the same as the user, then we return true and the filter function keeps this user in the array
             //if the logged in user is the same as the user, then we return false and the filter function removes this user from the array
             return (user.userId !== userId);
           });
+
+          //filtering users that we already liked
+          const filteredLikedUsers = filteredOurselvesUsers.filter( user => {
+            return(user.likedBy.hasOwnProperty(userId) === false);
+          });
+
+          //filtering users that we already messaged (shouldn't be necessary since messaged users were already liked by the logged in user, but oh well)
+          const filteredMessagedUsers = filteredLikedUsers.filter( user => {
+            return (user.chats.hasOwnProperty(userId) === false);
+          });
           
 
-          dispatch(fetchUsersSuccess(finalUsers));
+          dispatch(fetchUsersSuccess(filteredMessagedUsers));
         })
         .catch( err => {
           dispatch(fetchUsersFail(err));
