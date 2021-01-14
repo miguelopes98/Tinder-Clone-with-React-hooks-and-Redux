@@ -111,7 +111,8 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
             liked: {exists: true},
             dislikedBy: {exists: true},
             likedBy: {exists: true},
-            matches: {exists: true}
+            matches: {exists: true},
+            chats: {exists: true}
           }
   
           axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users.json', userData)

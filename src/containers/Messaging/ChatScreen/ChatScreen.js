@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
+import {useParams} from 'react-router-dom';
 
 import classes from './ChatScreen.css';
 import Avatar from '@material-ui/core/Avatar';
 
-const ChatScreen = () => {
+const ChatScreen = (props) => {
 
   const [input, setInput] = useState('');
 
@@ -24,9 +25,13 @@ const ChatScreen = () => {
     }
   ])
 
+  const params = useParams();
+  console.log(params);
+
   const sendHandler = (event) => {
     event.preventDefault();
 
+    //need to change the state in the reducer instead of this
     setMessages([...messages, { text: input}]);
 
     setInput("");

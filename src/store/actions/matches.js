@@ -9,7 +9,6 @@ export const fetchMatchesStart = () => {
 };
 
 export const fetchMatchesSuccess = ( usersToShow ) => {
-  console.log("action users to show " + usersToShow);
   return {
       type: actionTypes.FETCH_MATCHES_SUCCESS,
       usersToShow: usersToShow
@@ -28,7 +27,6 @@ export const fetchMatches = (userId) => {
     dispatch(fetchMatchesStart());
     //grabbing profile data associated to the logged in user
     const queryParams = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + userId + '"';
-    console.log(userId);
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
     .then( res => {
       let fetchedUser = [];
@@ -40,7 +38,6 @@ export const fetchMatches = (userId) => {
           id: key
         });
       }
-      console.log("fetchedUser " + fetchedUser);
       const loggedInUser = fetchedUser[0];
 
       // grabbing the id of the users the logged in user matched with
@@ -51,7 +48,6 @@ export const fetchMatches = (userId) => {
           matchesInfo.push(loggedInUser.matches[id]);
         }
       }
-      console.log("matchesInfo lenght " + matchesInfo.length);
 
       dispatch(fetchMatchesSuccess(matchesInfo));
 
