@@ -44,18 +44,21 @@ export const fetchLastMessages = (userId) => {
       const messagesToShow = [];
 
       //this will contain the info of each object we're going to push to the array above
-      let userInfo = null;
 
       for( let id in loggedInUser.chats){
+        
+        //console.log("userInfo " + userInfo);
         //just so we don't grab the 'exists': true key-value pair
         if( id !== 'exists'){
-          userInfo = {
-            name: loggedInUser.chats.id.firstName,
-            profilePicture: loggedInUser.chats.id.profilePicture,
-            lastMessage: loggedInUser.chats.id.messages.lastMessage
-          }
-
-          messagesToShow.push(userInfo);
+          let textInfo = {
+            name: loggedInUser.chats[id].firstName,
+            profilePicture: loggedInUser.chats[id].profilePicture,
+            lastMessage: loggedInUser.chats[id].messages.lastMessage,
+            //this is just so we can assign a react key to each component we output when we loop through the last messages to render them, since we're going to be outputting a list of items
+            userId: id
+          };
+          messagesToShow.push(textInfo);
+          
         }
       }
 
@@ -207,7 +210,8 @@ export const sendMessage = ( recipientUserId, textSent) => {
           profilePicture: recipientUser.profilePicture,
           userId: recipientUser.userId,
           messages: {
-            text: textSent
+            text: textSent,
+            lastMessage: textSent
           }
         }
 
@@ -223,7 +227,8 @@ export const sendMessage = ( recipientUserId, textSent) => {
             userId: loggedInUser.userId,
             messages: {
               name: loggedInUser.firstName,
-              text: textSent
+              text: textSent,
+              lastMessage: textSent
             }
           }
 

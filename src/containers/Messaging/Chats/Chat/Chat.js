@@ -6,7 +6,7 @@ import Avatar from '@material-ui/core/Avatar';
 
 const Chat = (props) => {
   return (
-    <NavLink to={"/chat/" + props.name}>
+    <NavLink to={"/chat/" + props.userId}>
       <div className={classes.chat}>
         {/* the cool thing about the Avatar from material UI is that if no profile pic is passed or if we have a problem loading it, it shows a generic profile icon*/}
         <Avatar className={classes.chatImage} alt={props.name} src={props.profilePic}/>
