@@ -16,22 +16,24 @@ const ChatScreen = (props) => {
 
   useEffect(() => {
     //params.userId is the id passed as a url parameter which is the id of the recipient
-    if(props.userId){
+    if(props.userId && !props.loadingSendMessage){
       props.onFetchMessages(props.userId, params.userId);
     }
     
-  }, [props.onFetchMessages, props.userId, params.userId]);
+    //we also want to re fetch messages when a new message is sent
+  }, [props.onFetchMessages, props.userId, params.userId, props.loadingSendMessage]);
 
   const sendHandler = (event) => {
     event.preventDefault();
 
+    props.onSendMessage(params.userId, input);
     //need to change the state in the reducer instead of this
     //setMessages([...messages, { text: input}]);
 
     setInput("");
   }
 
-  if(props.loadingSendMessage || props.loadingFetchMessages || !props.userId || !props.recipientInfo){
+  if(!props.userId || !props.recipientInfo){
     return (
       <Spinner/>
     );
@@ -94,7 +96,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchMessages: (userId, recipientUserId) => dispatch(actions.fetchMessages(userId, recipientUserId))
+    onFetchMessages: (userId, recipientUserId) => dispatch(actions.fetchMessages(userId, recipientUserId)),
+    onSendMessage: (recipientUserId, textSent) => dispatch(actions.sendMessage(recipientUserId, textSent))
   };
 };
 
