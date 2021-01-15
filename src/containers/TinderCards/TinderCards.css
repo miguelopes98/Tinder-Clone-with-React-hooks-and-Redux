@@ -38,3 +38,29 @@
   transform: translate(-50%, -50%);
   color: #666;
 }
+
+.Login{
+  text-align: center;
+  padding-bottom: 10%;
+}
+
+.LoginButton{
+  position: absolute;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background-color: #34a4eb;
+  border: none;
+  color: white;
+  outline: none;
+  cursor: pointer;
+  font: inherit;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 10px;
+  font-size: large;
+}
+
+.divModal{
+  padding: 5%;
+}

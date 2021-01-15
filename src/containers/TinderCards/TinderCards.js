@@ -1,10 +1,11 @@
 import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
+import {Link} from 'react-router-dom';
 
 import classes from './TinderCards.css';
 import TinderCard from 'react-tinder-card';
 import * as actions from '../../store/actions/index';
-import Spinner from '../../components/UI/Spinner/Spinner';
+import Modal from '../../components/UI/Modal/Modal';
 
 const TinderCards = (props) => {
 
@@ -27,7 +28,6 @@ const TinderCards = (props) => {
     props.onFetchUsers(props.token, props.userId);
   }
 
-  //let users = <Spinner/>;
   let users= null;
   // we need the searched for users props because without it, we start with loading as false by default, before trying to grab the users and the usersToShow array is by default length zero as well
   //therefore, we would render a spinner, then the paragraph saying we have no users and then the users, because it wouldn't give enough time to search for users,
@@ -65,10 +65,26 @@ const TinderCards = (props) => {
     }
   }
     
+  //we're going to render a modal to ask the user to login if they're not logged in
+  let modal = null;
+
+  //if the user isn't authenticated, we render the modal
+  if(!props.isAuthenticated){
+    modal = (
+      <Modal show={true}>
+        <div className={classes.divModal}>
+          <h2 className={classes.Login}>You need have an account to start swipping!</h2>
+          <Link className={classes.LoginButton} to="/auth">Login/Sign Up</Link>
+        </div>
+      </Modal>
+    );
+  }
 
   return (
     <div>
       {users}
+
+      {modal}
     </div>
   );
 
