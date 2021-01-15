@@ -26,7 +26,8 @@ export const fetchMatches = (userId) => {
   return dispatch => {
     dispatch(fetchMatchesStart());
     //grabbing profile data associated to the logged in user
-    const queryParams = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + userId + '"';
+    let token = localStorage.getItem("token");
+    const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + userId + '"';
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
     .then( res => {
       let fetchedUser = [];

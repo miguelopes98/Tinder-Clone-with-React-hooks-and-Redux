@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import { Switch, Route, withRouter} from 'react-router-dom';
+import { Switch, Route, withRouter, Redirect} from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import classes from './App.css';
@@ -20,48 +20,64 @@ const App = (props) => {
     props.onTryAutoSignup();
   }, [props.onTryAutoSignup]);
 
+  let routes = (
+    <Switch>
+      <Route path="/auth" exact>
+        {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
+        <Header backButton="/"/>
+        <Auth/>
+      </Route>
+
+      <Route path="/" exact>
+        <Header/>
+        {/* when we swipe the cards off the screen, the component remains there, if we want to change this, we have to
+        do this in the onCardLeftScreen callback, checkout documentation of this package here (https://www.npmjs.com/package/react-tinder-card) and look at th react course*/}
+        <TinderCards/>
+        <SwipeButtons/>
+      </Route>
+      <Redirect to="/" />
+    </Switch>
+  );
+
+  if(props.isAuthenticated) {
+    routes = (
+      <Switch>
+
+        {/*we later need to change this to be person id*/}
+        <Route path="/chat/:userId">
+          {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
+          <Header backButton="/chat"/>
+          <ChatScreen/>
+        </Route>
+
+        <Route path="/chat">
+          {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
+          <Header backButton="/"/>
+          <Chats/>
+        </Route>
+
+        <Route path="/logout" exact>
+          {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
+          <Header backButton="/"/>
+          <Logout/>
+        </Route>
+
+        <Route path="/">
+          <Header/>
+          {/* when we swipe the cards off the screen, the component remains there, if we want to change this, we have to
+          do this in the onCardLeftScreen callback, checkout documentation of this package here (https://www.npmjs.com/package/react-tinder-card) and look at th react course*/}
+          <TinderCards/>
+          <SwipeButtons/>
+        </Route>
+        
+        <Redirect to="/" />
+      </Switch>
+    );
+  }
+
   return (
     <div className={classes.App}>
-
-        <Switch>
-
-          {/*we later need to change this to be person id*/}
-          <Route path="/chat/:userId">
-            {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
-            <Header backButton="/chat"/>
-            <ChatScreen/>
-          </Route>
-
-          <Route path="/chat">
-            {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
-            <Header backButton="/"/>
-            <Chats/>
-          </Route>
-
-          <Route path="/auth">
-            {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
-            <Header backButton="/"/>
-            <Auth/>
-          </Route>
-
-          <Route path="/logout">
-            {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
-            <Header backButton="/"/>
-            <Logout/>
-          </Route>
-
-          <Route path="/">
-            <Header/>
-            {/* when we swipe the cards off the screen, the component remains there, if we want to change this, we have to
-            do this in the onCardLeftScreen callback, checkout documentation of this package here (https://www.npmjs.com/package/react-tinder-card) and look at th react course*/}
-            <TinderCards/>
-            <SwipeButtons/>
-          </Route>
-
-        </Switch>
-
-        {/*Individual chat screen*/}
-
+        {routes}
     </div>
   );
 }

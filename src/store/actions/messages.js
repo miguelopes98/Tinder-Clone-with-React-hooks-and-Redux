@@ -26,7 +26,8 @@ export const fetchLastMessages = (userId) => {
   return dispatch => {
     dispatch(fetchLastMessagesStart());
     //grabbing profile data associated to the logged in user
-    const queryParams = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + userId + '"';
+    let token = localStorage.getItem("token");
+    const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + userId + '"';
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
     .then(res => {
       const fetchedUser = [];
@@ -99,7 +100,8 @@ export const fetchMessages = (userId, recipientUserId) => {
   return dispatch => {
     dispatch(fetchMessagesStart());
     //grabbing profile data associated to the logged in user
-    const queryParams = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + userId + '"';
+    let token = localStorage.getItem("token");
+    const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + userId + '"';
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
     .then( res => {
       const fetchedUser = [];
@@ -116,7 +118,8 @@ export const fetchMessages = (userId, recipientUserId) => {
       const messagesToShow = [];
 
       //getting profile data of the recipient info
-      const queryParams1 = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + recipientUserId + '"';
+      let token = localStorage.getItem("token");
+      const queryParams1 = '?auth=' + token + '&?orderBy="userId"&equalTo="' + recipientUserId + '"';
       axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams1)
       .then(res => {
         const fetchedUser = [];
@@ -200,7 +203,8 @@ export const sendMessage = ( recipientUserId, textSent ) => {
     dispatch(sendMessageStart());
     //grabbing profile data associated to the logged in user
     const userId = localStorage.getItem("userId");
-    const queryParams = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + userId + '"';
+    let token = localStorage.getItem("token");
+    const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + userId + '"';
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
     .then( res => {
       let fetchedUser = [];
@@ -215,7 +219,7 @@ export const sendMessage = ( recipientUserId, textSent ) => {
       const loggedInUser = fetchedUser[0];
 
       //grabbing profile data of the recipient user
-      const queryParams1 = /*'?auth=' + token + '&*/'?orderBy="userId"&equalTo="' + recipientUserId + '"';
+      const queryParams1 = '?auth=' + token + '&?orderBy="userId"&equalTo="' + recipientUserId + '"';
       axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams1)
       .then(response => {
 
@@ -238,12 +242,12 @@ export const sendMessage = ( recipientUserId, textSent ) => {
 
           //lets start by removing the recipient user from the matches field of the logged in user
           /* loggedInUser.id is the firebase key of the logged in user*/
-          axios.delete('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/matches/' + recipientUserId + '.json')
+          axios.delete('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/matches/' + recipientUserId + '.json?auth=' + token)
           .then(res => {
           
             //lets now remove the logged in user from the matches field of the recipient user
             //recipientUser.id is the firebase key of that user
-            axios.delete('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/matches/' + loggedInUser.userId + '.json')
+            axios.delete('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/matches/' + loggedInUser.userId + '.json?auth=' + token)
             .then(res => {
 
               console.log(recipientUserId.id);
@@ -261,7 +265,7 @@ export const sendMessage = ( recipientUserId, textSent ) => {
 
               //now we're going to update the last message in the chats field of logged in user.
               /* loggedInUser.id is the firebase key of the logged in user*/
-              axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/chats.json', {[recipientUserId]: recipientData})
+              axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/chats.json?auth=' + token, {[recipientUserId]: recipientData})
               .then(res => {
 
                 //now we're preparing the message to add to the chats field of the logged in user
@@ -270,7 +274,7 @@ export const sendMessage = ( recipientUserId, textSent ) => {
                 }
 
                 //now we're going to add the message itself to the chats field of the logged in user
-                axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/chats/' + recipientUserId + '/messages.json', message)
+                axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/chats/' + recipientUserId + '/messages.json?auth=' + token, message)
                 .then(res => {
                   //now we're preparing the data to add the chat of the logged in user to the chats field of the recipient user
                   const senderData = {
@@ -286,7 +290,7 @@ export const sendMessage = ( recipientUserId, textSent ) => {
 
                   //now we're going to update the last message in the chats field of the recipient user.
                   //recipientUser.id is the firebase key of the recipient user
-                  axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/chats.json', {[loggedInUser.userId]: senderData})
+                  axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/chats.json?auth=' + token, {[loggedInUser.userId]: senderData})
                   .then(response => {
 
                     //now we're preparing the message to add to the chats field of the recipient user
@@ -296,7 +300,7 @@ export const sendMessage = ( recipientUserId, textSent ) => {
                     }
 
                     //now we're going to add the message itself to the chats field of the recipient user
-                    axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/chats/' + loggedInUser.userId + '/messages.json', message)
+                    axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/chats/' + loggedInUser.userId + '/messages.json?auth=' + token, message)
                     .then(response => {
                       dispatch(sendMessageSuccess(textSent));
                     })
@@ -350,7 +354,7 @@ export const sendMessage = ( recipientUserId, textSent ) => {
   
           //now we're going to update the last message in the chats field of logged in user.
           /* loggedInUser.id is the firebase key of the logged in user*/
-          axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/chats/' + recipientUserId + '/messages.json', {lastMessage: textSent})
+          axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/chats/' + recipientUserId + '/messages.json?auth=' + token, {lastMessage: textSent})
           .then(res => {
   
             //now we're preparing the message to add to the chats field of the logged in user
@@ -359,12 +363,12 @@ export const sendMessage = ( recipientUserId, textSent ) => {
             }
   
             //now we're going to add the message itself to the chats field of the logged in user
-            axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/chats/' + recipientUserId + '/messages.json', message)
+            axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + loggedInUser.id + '/chats/' + recipientUserId + '/messages.json?auth=' + token, message)
             .then(res => {
   
               //now we're going to update the last message in the chats field of the recipient user.
               //recipientUser.id is the firebase key of the recipient user
-              axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/chats/' + loggedInUser.userId + '/messages.json', {lastMessage: textSent})
+              axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/chats/' + loggedInUser.userId + '/messages.json?auth=' + token, {lastMessage: textSent})
               .then(response => {
   
                 //now we're preparing the message to add to the chats field of the recipient user
@@ -374,7 +378,7 @@ export const sendMessage = ( recipientUserId, textSent ) => {
                 }
   
                 //now we're going to add the message itself to the chats field of the recipient user
-                axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/chats/' + loggedInUser.userId + '/messages.json', message)
+                axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + recipientUser.id + '/chats/' + loggedInUser.userId + '/messages.json?auth=' + token, message)
                 .then(response => {
                   dispatch(sendMessageSuccess(textSent));
                 })
