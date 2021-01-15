@@ -27,8 +27,16 @@ const TinderCards = (props) => {
     props.onFetchUsers(props.token, props.userId);
   }
 
+  let noUsersToShow = null;
+  if(props.usersToShow.length === 0) {
+    noUsersToShow = (
+      <h1 className={classes.noUsers}>There are currently no people around you, come back later to keep swiping!</h1>
+    )
+  }
+
   return (
     <div>
+      {noUsersToShow}
 
       <div className={classes.cardContainer}>
         {/* we're looping through the users we have and outputting them*/}
@@ -53,6 +61,7 @@ const TinderCards = (props) => {
           );
         })}
       </div>
+
     </div>
   );
 
