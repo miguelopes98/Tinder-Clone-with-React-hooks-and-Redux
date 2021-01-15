@@ -41,7 +41,6 @@ const userCreatingStart = ( state, action ) => {
 };
 
 const userCreatingSuccess = (state, action) => {
-  console.log("userCreating reducer " + action.userId);
   return updateObject( state, {
       userId: action.userId,
       errorUserCreation: null,

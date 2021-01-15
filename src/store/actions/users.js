@@ -22,7 +22,7 @@ export const fetchUsersStart = () => {
   };
 };
 
-export const fetchUsers = (token, userId) => {
+export const fetchUsers = (userId) => {
   return dispatch => {
     dispatch(fetchUsersStart());
     //grabbing profile data associated to the logged in user
@@ -235,6 +235,7 @@ export const userSwiped = (direction, swipedUserId) => {
 
                     .then( response => {
                       dispatch(userSwipedDirection(direction));
+                      dispatch(fetchUsers(userId));
                     })
                     .catch(err => {
                       dispatch(fetchUsersFail(err));
@@ -306,11 +307,13 @@ export const userSwiped = (direction, swipedUserId) => {
                       //if it has, then we want to add the match to both of them
                       if(authenticatedUser[0].likedBy.hasOwnProperty(swipedUserId) === true){
                         dispatch(match(authenticatedUser[0], swipedUserId, direction));
+                        dispatch(fetchUsers(userId));
                       }
                       
                       //if it hasn't then we just proceed normally
                       else{
                         dispatch(userSwipedDirection(direction));
+                        dispatch(fetchUsers(userId));
                       }
 
                     })
@@ -334,9 +337,6 @@ export const userSwiped = (direction, swipedUserId) => {
           dispatch(fetchUsersFail(err));
         });
 
-
-
-      dispatch(userSwipedDirection(direction));
     }
   }
 }
