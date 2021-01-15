@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import classes from './TinderCards.css';
 import TinderCard from 'react-tinder-card';
 import * as actions from '../../store/actions/index';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 const TinderCards = (props) => {
 
   useEffect(() => {
     //we say this in case the user just created an account and gets redirected here, we want to make sure that his profile has finished being created before fetching the users to show him.
-    if(props.loadingUserCreation === false) {
+    if(props.loadingUserCreation === false && props.isAuthenticated) {
       props.onFetchUsers(props.token, props.userId);
     }
     //we had to add userId to the dependencies, because this was running before the useEffect hook on the app component was running for whatever reason
@@ -20,24 +21,19 @@ const TinderCards = (props) => {
   },[props.loadingUserCreation, props.userId]);
 
   const swiped = (direction, userId) => {
-    console.log('removing: ' + userId);
     props.onUserSwiped(direction, userId);
     
     //everytime we swipe we want to grab the people we show again so that it is always updated
     props.onFetchUsers(props.token, props.userId);
   }
 
-  let noUsersToShow = null;
-  if(props.usersToShow.length === 0) {
-    noUsersToShow = (
-      <h1 className={classes.noUsers}>There are currently no people around you, come back later to keep swiping!</h1>
-    )
-  }
-
-  return (
-    <div>
-      {noUsersToShow}
-
+  //let users = <Spinner/>;
+  let users= null;
+  // we need the searched for users props because without it, we start with loading as false by default, before trying to grab the users and the usersToShow array is by default length zero as well
+  //therefore, we would render a spinner, then the paragraph saying we have no users and then the users, because it wouldn't give enough time to search for users,
+  //this way we fix that problem
+  if(props.loading === false && props.searchedForUsers === true) {
+    users = (
       <div className={classes.cardContainer}>
         {/* we're looping through the users we have and outputting them*/}
         {props.usersToShow.map(person => {
@@ -61,7 +57,18 @@ const TinderCards = (props) => {
           );
         })}
       </div>
+    );
+    if(props.usersToShow.length === 0) {
+      users = (
+        <h1 className={classes.noUsers}>There are currently no people around you, come back later to keep swiping!</h1>
+      )
+    }
+  }
+    
 
+  return (
+    <div>
+      {users}
     </div>
   );
 
@@ -74,7 +81,9 @@ const mapStateToProps = state => {
     token: state.auth.token,
     userId: state.auth.userId,
     loadingUserCreation: state.auth.loadingUserCreation,
-    lastDirection: state.users.lastDirection
+    lastDirection: state.users.lastDirection,
+    searchedForUsers: state.users.searchedForUsers,
+    isAuthenticated: state.auth.token !== null
   };
 };
 

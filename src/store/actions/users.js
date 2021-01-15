@@ -163,7 +163,6 @@ export const match = (authenticatedUser, swipedUserId, direction) => {
           axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + urlParams1 + '/matches.json?auth=' + token, {[swipedUserId]: fetchedUsers[0]})
 
             .then( response => {
-              console.log("THIS RAN");
               dispatch(userSwipedDirection(direction));
             })
             .catch(err => {

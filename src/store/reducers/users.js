@@ -6,7 +6,9 @@ const initialState = {
     error: null,
     loading: false,
     usersToShow: [],
-    lastDirection: null
+    lastDirection: null,
+    //this defines if we already tried to search for users at least once. this is to helps us manage the loading state in the tinder cards component
+    searchedForUsers: false
 };
 
 const fetchUsersStart = ( state, action ) => {
@@ -16,12 +18,13 @@ const fetchUsersStart = ( state, action ) => {
 const fetchUsersSuccess = ( state, action ) => {
   return updateObject( state, {
       usersToShow: action.usersToShow,
-      loading: false
+      loading: false,
+      searchedForUsers: true
   } );
 };
 
 const fetchUsersFail = ( state, action ) => {
-  return updateObject( state, { loading: false } );
+  return updateObject( state, { loading: false, error: action.error } );
 };
 
 const swipedDirection = ( state, action ) => {
