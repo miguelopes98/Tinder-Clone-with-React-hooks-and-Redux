@@ -27,7 +27,7 @@ export const fetchUsers = (token, userId) => {
     dispatch(fetchUsersStart());
     //grabbing profile data associated to the logged in user
     let token = localStorage.getItem("token");
-    const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + userId + '"';
+    const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
     .then( res => {
       const fetchedUser = [];
@@ -42,7 +42,7 @@ export const fetchUsers = (token, userId) => {
       const loggedInUser = fetchedUser;
 
       // grabbing the users that have the gender the logged in user is interested in
-      const queryParams = '?auth=' + token + '&?orderBy="gender"&equalTo="' + loggedInUser[0].interestedIn + '"';
+      const queryParams = '?auth=' + token + '&orderBy="gender"&equalTo="' + loggedInUser[0].interestedIn + '"';
       axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
         .then( res => {
           //we grabbed all the people that have the gender that the logged in user is interested in, now we have to filter those results to only show the ones that are interested in the
@@ -125,7 +125,7 @@ export const match = (authenticatedUser, swipedUserId, direction) => {
   return dispatch => {
     //getting the user that was swiped on so that we can grab the firebase key and save it
     let token = localStorage.getItem("token");
-    const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + swipedUserId + '"';
+    const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + swipedUserId + '"';
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
     .then( res => {
       //even though we are only grabbing one user for sure, we still don't have a way to know the firebase key that comes in the response.
@@ -146,7 +146,7 @@ export const match = (authenticatedUser, swipedUserId, direction) => {
 
         //now we need to add the match to the logged in user, for that we need the key to the object that represents the logged in user,
         //for that we need to grab the logged in user
-        const queryParams1 = '?auth=' + token + '&?orderBy="userId"&equalTo="' + authenticatedUser.userId + '"';
+        const queryParams1 = '?auth=' + token + '&orderBy="userId"&equalTo="' + authenticatedUser.userId + '"';
         axios.get('https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams1)
         .then( res => {
 
@@ -197,7 +197,7 @@ export const userSwiped = (direction, swipedUserId) => {
 
       //getting the user that was swiped on so that we can grab the firebase key and save it.
       //adding the logged in user to the dislikedBy field on the swipedUserId
-      const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + swipedUserId + '"';
+      const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + swipedUserId + '"';
       axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
         .then( res => {
           //even though we are only grabbing one user for sure, we still don't have a way to know the firebase key that comes in the response.
@@ -218,7 +218,7 @@ export const userSwiped = (direction, swipedUserId) => {
             .then( response => {
               //now we need to add to the logged in user saying that we swiped left on the shown user, for that we need the key to the object that represents the logged in user,
               //for that we need to grab the logged in user
-              const queryParams1 = '?auth=' + token + '&?orderBy="userId"&equalTo="' + userId + '"';
+              const queryParams1 = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
               axios.get('https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams1)
 
                 .then( response => {
@@ -264,7 +264,7 @@ export const userSwiped = (direction, swipedUserId) => {
 
       //getting the user that was swiped on so that we can grab the firebase key and save it.
       //adding the logged in user to the likedBy field on the swipedUserId
-      const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + swipedUserId + '"';
+      const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + swipedUserId + '"';
       axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
         .then( res => {
           //even though we are only grabbing one user for sure, we still don't have a way to know the firebase key that comes in the response.
@@ -285,7 +285,7 @@ export const userSwiped = (direction, swipedUserId) => {
             .then( response => {
               //now we need to add to the logged in user saying that we swiped left on the shown user, for that we need the key to the object that represents the logged in user,
               //for that we need to grab the logged in user
-              const queryParams1 = '?auth=' + token + '&?orderBy="userId"&equalTo="' + userId + '"';
+              const queryParams1 = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
               axios.get('https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams1)
 
                 .then( response => {

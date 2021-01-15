@@ -29,7 +29,6 @@ const TinderCards = (props) => {
 
   return (
     <div>
-      <h1>Tinder Cards</h1>
 
       <div className={classes.cardContainer}>
         {/* we're looping through the users we have and outputting them*/}
@@ -54,7 +53,6 @@ const TinderCards = (props) => {
           );
         })}
       </div>
-      {props.lastDirection ? <p className='infoText'>You swiped {props.lastDirection}</p> : <p className='infoText' />}
     </div>
   );
 

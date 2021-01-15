@@ -27,7 +27,7 @@ export const fetchLastMessages = (userId) => {
     dispatch(fetchLastMessagesStart());
     //grabbing profile data associated to the logged in user
     let token = localStorage.getItem("token");
-    const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + userId + '"';
+    const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
     .then(res => {
       const fetchedUser = [];
@@ -101,7 +101,7 @@ export const fetchMessages = (userId, recipientUserId) => {
     dispatch(fetchMessagesStart());
     //grabbing profile data associated to the logged in user
     let token = localStorage.getItem("token");
-    const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + userId + '"';
+    const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
     .then( res => {
       const fetchedUser = [];
@@ -119,7 +119,7 @@ export const fetchMessages = (userId, recipientUserId) => {
 
       //getting profile data of the recipient info
       let token = localStorage.getItem("token");
-      const queryParams1 = '?auth=' + token + '&?orderBy="userId"&equalTo="' + recipientUserId + '"';
+      const queryParams1 = '?auth=' + token + '&orderBy="userId"&equalTo="' + recipientUserId + '"';
       axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams1)
       .then(res => {
         const fetchedUser = [];
@@ -204,7 +204,7 @@ export const sendMessage = ( recipientUserId, textSent ) => {
     //grabbing profile data associated to the logged in user
     const userId = localStorage.getItem("userId");
     let token = localStorage.getItem("token");
-    const queryParams = '?auth=' + token + '&?orderBy="userId"&equalTo="' + userId + '"';
+    const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
     axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams)
     .then( res => {
       let fetchedUser = [];
@@ -219,7 +219,7 @@ export const sendMessage = ( recipientUserId, textSent ) => {
       const loggedInUser = fetchedUser[0];
 
       //grabbing profile data of the recipient user
-      const queryParams1 = '?auth=' + token + '&?orderBy="userId"&equalTo="' + recipientUserId + '"';
+      const queryParams1 = '?auth=' + token + '&orderBy="userId"&equalTo="' + recipientUserId + '"';
       axios.get( 'https://tinder-9d380-default-rtdb.firebaseio.com/users.json' + queryParams1)
       .then(response => {
 

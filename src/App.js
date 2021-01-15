@@ -56,6 +56,12 @@ const App = (props) => {
           <Chats/>
         </Route>
 
+        <Route path="/auth" exact>
+          {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
+          <Header backButton="/"/>
+          <Auth/>
+        </Route>
+
         <Route path="/logout" exact>
           {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
           <Header backButton="/"/>
