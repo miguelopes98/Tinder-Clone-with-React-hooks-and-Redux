@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import classes from './App.css';
 import Header from './components/Navbar/Header';
 import TinderCards from './containers/TinderCards/TinderCards';
-import SwipeButtons from './components/SwipeButtons/SwipeButtons';
 import Chats from './containers/Messaging/Chats/Chats';
 import ChatScreen from './containers/Messaging/ChatScreen/ChatScreen';
 import Auth from './containers/Auth/Auth';
@@ -33,7 +32,6 @@ const App = (props) => {
         {/* when we swipe the cards off the screen, the component remains there, if we want to change this, we have to
         do this in the onCardLeftScreen callback, checkout documentation of this package here (https://www.npmjs.com/package/react-tinder-card) and look at th react course*/}
         <TinderCards/>
-        <SwipeButtons/>
       </Route>
       <Redirect to="/" />
     </Switch>
@@ -73,7 +71,6 @@ const App = (props) => {
           {/* when we swipe the cards off the screen, the component remains there, if we want to change this, we have to
           do this in the onCardLeftScreen callback, checkout documentation of this package here (https://www.npmjs.com/package/react-tinder-card) and look at th react course*/}
           <TinderCards/>
-          <SwipeButtons/>
         </Route>
         
         <Redirect to="/" />

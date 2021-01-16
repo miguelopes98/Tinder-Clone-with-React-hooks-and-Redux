@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import { connect } from 'react-redux';
 import {Link} from 'react-router-dom';
 
@@ -6,8 +6,23 @@ import classes from './TinderCards.css';
 import TinderCard from 'react-tinder-card';
 import * as actions from '../../store/actions/index';
 import Modal from '../../components/UI/Modal/Modal';
+import ReplayIcon from '@material-ui/icons/Replay';
+import CloseIcon from '@material-ui/icons/Close';
+import StarRateIcon from '@material-ui/icons/StarRate';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FlashOnIcon from '@material-ui/icons/FlashOn';
+import IconButton from '@material-ui/core/IconButton';
 
 const TinderCards = (props) => {
+
+
+  //initiating the refs array
+  let elRefs = useRef([]);
+  //if the length of the refs array isn't the same as the usersToShow, then we keep doing this. We want each element of the refs array to hold one ref for each user in the usersToShow list.
+  if (elRefs.current.length !== props.usersToShow.length) {
+    // add or remove refs
+    elRefs = Array(props.usersToShow.length).fill().map((_, i) => elRefs.current[i] || React.createRef());
+  }
 
   useEffect(() => {
     //we say this in case the user just created an account and gets redirected here, we want to make sure that his profile has finished being created before fetching the users to show him.
@@ -29,6 +44,17 @@ const TinderCards = (props) => {
     //this is done in the onUserSwipe action, everytime we successfully swipe someone, we call for the users to be fetched.
   }
 
+  const swipe = (dir) => {
+    if (props.usersToShow.length) {
+      const toBeRemoved = props.usersToShow[props.usersToShow.length - 1].userId // Find the card object to be removed
+      const index = props.usersToShow.map(person => person.userId).indexOf(toBeRemoved) // Find the index of which to make the reference to
+      // Swipe the card! this simply triggers the onSwipe event listener of the tinder card component of the package we're using, therefore it also triggers
+      //the hadndlers that are called when the card is swiped.
+      elRefs[index].current.swipe(dir)
+    }
+  }
+
+
   let users= null;
     
   // we need the searched for users props because without it, we start with loading as false by default, before trying to grab the users and the usersToShow array is by default length zero as well
@@ -38,10 +64,11 @@ const TinderCards = (props) => {
      users = (
       <div className={classes.cardContainer}>
         {/* we're looping through the users we have and outputting them*/}
-        {props.usersToShow.map(person => {
+        {props.usersToShow.map((person, index) => {
           return (
             //this component is from a package we installed, the documentation can be found in https://www.npmjs.com/package/react-tinder-card 
             <TinderCard
+              ref={elRefs[index]}
               className={classes.swipe}
               onSwipe={(dir) => swiped(dir, person.userId)}
               key={person.userId}
@@ -87,6 +114,29 @@ const TinderCards = (props) => {
       {users}
 
       {modal}
+
+      <div className={classes.swipeButtons}>
+        <IconButton id={classes.repeat}>
+          <ReplayIcon fontSize="large"/> 
+        </IconButton>
+        
+        <IconButton onClick={() => swipe('left')} id={classes.left}>
+          <CloseIcon fontSize="large"/>
+        </IconButton>
+        
+        <IconButton id={classes.star}>
+          <StarRateIcon fontSize="large"/>
+        </IconButton>
+        
+        <IconButton onClick={() => swipe('right')} id={classes.right}>
+          <FavoriteIcon fontSize="large"/>
+        </IconButton>
+
+        <IconButton id={classes.lightning}>
+          <FlashOnIcon fontSize="large"/>
+        </IconButton>
+      </div>
+
     </div>
   );
 
