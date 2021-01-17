@@ -12,6 +12,7 @@ import authReducer from './store/reducers/auth';
 import usersReducer from './store/reducers/users';
 import matchesReducer from './store/reducers/matches';
 import messagesReducer from './store/reducers/messages';
+import usersUpdateReducer from './store/reducers/updateUsers';
 
 const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
 
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   users: usersReducer,
   matches: matchesReducer,
-  messages: messagesReducer
+  messages: messagesReducer,
+  updateUser: usersUpdateReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(

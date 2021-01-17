@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { connect } from 'react-redux';
 import {Link} from 'react-router-dom';
-import Transition from 'react-transition-group/Transition';
 
 import classes from './TinderCards.css';
 import TinderCard from 'react-tinder-card';

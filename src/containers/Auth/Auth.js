@@ -107,7 +107,7 @@ const auth = (props) => {
       },
       value: '',
       validation: {
-        required: false
+        required: true
       },
       valid: false,
       touched: false

@@ -21,9 +21,11 @@ import classes from './Header.css';
 const Header = (props) => {
 
   let leftIcon = (
-    <IconButton>
-      <PersonIcon className={classes.icon} fontSize="large"/>
-    </IconButton>
+    <NavLink to ={"/user/" + props.userId}>
+      <IconButton>
+        <PersonIcon className={classes.icon} fontSize="large"/>
+      </IconButton>
+    </NavLink>
   );
 
   if(props.backButton) {
@@ -88,7 +90,8 @@ const Header = (props) => {
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.auth.token !== null
+    isAuthenticated: state.auth.token !== null,
+    userId: state.auth.userId
   };
 };
 

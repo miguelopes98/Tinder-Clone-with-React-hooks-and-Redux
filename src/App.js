@@ -10,6 +10,7 @@ import ChatScreen from './containers/Messaging/ChatScreen/ChatScreen';
 import Auth from './containers/Auth/Auth';
 import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
+import UserProfile from './containers/UserProfile/UserProfile';
 
 
 
@@ -52,6 +53,12 @@ const App = (props) => {
           {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
           <Header backButton="/"/>
           <Chats/>
+        </Route>
+
+        <Route path="/user/:userId">
+          {/*if we pass a prop of back button, we want to replace the left icon in the header with an arrow with takes us to a previous page/route instead of the profile icon*/}
+          <Header backButton="/"/>
+          <UserProfile/>
         </Route>
 
         <Route path="/auth">

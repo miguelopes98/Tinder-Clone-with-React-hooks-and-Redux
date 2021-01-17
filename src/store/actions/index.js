@@ -19,3 +19,8 @@ export {
   fetchMessages,
   sendMessage
 } from './messages';
+
+export {
+  fetchAuthenticatedUser,
+  updateUser
+} from './updateUsers';
