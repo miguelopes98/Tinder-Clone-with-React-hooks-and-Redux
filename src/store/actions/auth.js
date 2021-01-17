@@ -67,8 +67,10 @@ export const userCreatingFail = (error) => {
   };
 };
 
-export const auth = (email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn ) => {
+export const auth = (email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn, bio ) => {
   return dispatch => {
+
+    console.log(bio);
     dispatch(authStart());
 
     const authData = {
@@ -105,6 +107,7 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
             profilePicture: profilePicture,
             gender: gender,
             interestedIn: interestedIn,
+            bio: bio,
             //we gotta put exists: true so that these fields aren't empty, empty fields are automatically removed by firebase, which we don't want
             disliked: {exists: true},
             liked: {exists: true},

@@ -1,6 +1,7 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { connect } from 'react-redux';
 import {Link} from 'react-router-dom';
+import Transition from 'react-transition-group/Transition';
 
 import classes from './TinderCards.css';
 import TinderCard from 'react-tinder-card';
@@ -12,8 +13,13 @@ import StarRateIcon from '@material-ui/icons/StarRate';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
 import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
 
 const TinderCards = (props) => {
+
+  const [showBio, setShowBio] = useState(false);
+
+  const [clickedBioPerson, setClickedBioPerson] = useState();
 
 
   //initiating the refs array
@@ -55,6 +61,15 @@ const TinderCards = (props) => {
   }
 
 
+  const bioClickHandler = (person) => {
+    //if show bio was true, we turn it to false, if it was false, we turn it to true
+    setShowBio(prevState => {
+      return !prevState;
+    });
+    setClickedBioPerson(person);
+  }
+
+
   let users= null;
     
   // we need the searched for users props because without it, we start with loading as false by default, before trying to grab the users and the usersToShow array is by default length zero as well
@@ -82,9 +97,13 @@ const TinderCards = (props) => {
                 className={classes.card}>
                   <h3>{person.firstName}, {person.age}</h3>
               </div>
+              <IconButton onClick={() => bioClickHandler(person)} id={classes.plus}>
+                <AddIcon fontSize="large"/> 
+              </IconButton>
             </TinderCard>
           );
         })}
+          
       </div>
     );
     if(props.usersToShow.length === 0 && props.searchedForUsers) {
@@ -109,11 +128,31 @@ const TinderCards = (props) => {
     );
   }
 
+  //we're going to render a modal with the user bio and more if they click the plus button in the tinder card component
+  let bio = null;
+
+  //if they clicked the plus button to see more
+  if(showBio) {
+    bio = (
+      <Modal show={true}>
+        <div className={classes.divModal}>
+          <h3>{clickedBioPerson.firstName} {clickedBioPerson.lastName}, {clickedBioPerson.age}</h3>
+
+          <p className={classes.bioText}>{clickedBioPerson.bio}</p>
+
+          <button className={classes.dismissBio} onClick={bioClickHandler}>Dismiss</button>
+        </div>
+      </Modal>
+    );
+  }
+
   return (
     <div>
       {users}
 
       {modal}
+
+      {bio}
 
       <div className={classes.swipeButtons}>
         <IconButton id={classes.repeat}>

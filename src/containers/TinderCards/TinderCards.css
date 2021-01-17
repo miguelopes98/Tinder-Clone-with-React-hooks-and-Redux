@@ -65,6 +65,29 @@
   padding: 5%;
 }
 
+.bioText {
+  padding: 10px;
+  padding-bottom: 20px;
+}
+
+.dismissBio{
+  margin-top: 10px;
+  position: absolute;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background-color: #34a4eb;
+  border: none;
+  color: white;
+  outline: none;
+  cursor: pointer;
+  font: inherit;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 10px;
+  font-size: large;
+}
+
 .swipeButtons{
   position: fixed;
   bottom: 10vh;
@@ -103,4 +126,13 @@ automatically by material UI (we can check this if we inspect the app, so we jus
 #lightning {
   padding: 3vw ;
   color: #915dd1;
+}
+
+#plus {
+  padding: 1vw ;
+  background-color: #ec5e6f;
+  color: white;
+  position: absolute;
+  bottom: 1vh;
+  right: 1vw;
 }

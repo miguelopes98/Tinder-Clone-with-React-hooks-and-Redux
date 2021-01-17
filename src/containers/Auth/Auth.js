@@ -99,6 +99,19 @@ const auth = (props) => {
       valid: false,
       touched: false
     },
+    bio: {
+      elementType: 'textarea',
+      elementConfig: {
+        type: 'text',
+        placeholder: 'Say something about yourself...'
+      },
+      value: '',
+      validation: {
+        required: false
+      },
+      valid: false,
+      touched: false
+    },
     gender: {
       elementType: 'select',
       elementConfig: {
@@ -176,7 +189,7 @@ const auth = (props) => {
     event.preventDefault();
     //login/register the user
     props.onAuth( authForm.email.value, authForm.password.value, isSignup, registerForm.profilePicture.value, registerForm.age.value,
-      registerForm.firstName.value, registerForm.lastName.value, registerForm.gender.value, registerForm.interestedIn.value );
+      registerForm.firstName.value, registerForm.lastName.value, registerForm.gender.value, registerForm.interestedIn.value, registerForm.bio.value );
   }
 
   const switchAuthModeHandler = () => {
@@ -284,7 +297,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: ( email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn ) => dispatch( actions.auth( email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn ) )
+    onAuth: ( email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn, bio ) => dispatch( actions.auth( email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn, bio ) )
   };
 };
 
