@@ -5,11 +5,12 @@ const initialState = {
     error: null,
     loadingFetchingUser: false,
     authenticatedUser: null,
-    loadingUpdateUser: false
+    loadingUpdateUser: false,
+    errorUpdateUser: null
 };
 
 const fetchAuthenticatedUserStart = ( state, action ) => {
-  return updateObject( state, { loadingFetchingUser: true } );
+  return updateObject( state, { loadingFetchingUser: true, error: null } );
 };
 
 const fetchAuthenticatedUserSuccess = ( state, action ) => {
@@ -24,11 +25,11 @@ const fetchAuthenticatedUserFail = ( state, action ) => {
 };
 
 const updateUserFail = ( state, action ) => {
-  return updateObject( state, { loadingUpdateUser: false, error: action.error } );
+  return updateObject( state, { loadingUpdateUser: false, errorUpdateUser: action.error } );
 };
 
 const updateUserStart = ( state, action ) => {
-  return updateObject( state, { loadingUpdateUser: true } );
+  return updateObject( state, { loadingUpdateUser: true, errorUpdateUser: null } );
 };
 
 const updateUserSuccess = ( state, action ) => {

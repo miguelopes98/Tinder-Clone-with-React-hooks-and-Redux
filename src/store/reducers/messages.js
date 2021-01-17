@@ -15,7 +15,7 @@ const initialState = {
 };
 
 const fetchMessagesStart = ( state, action ) => {
-  return updateObject( state, { loadingFetchMessages: true, messagesToShow: [], recipientInfo: null } );
+  return updateObject( state, { loadingFetchMessages: true, messagesToShow: [], recipientInfo: null, errorFetchMessages: null } );
 };
 
 const fetchMessagesSuccess = ( state, action ) => {
@@ -34,7 +34,7 @@ const fetchMessagesFail = ( state, action ) => {
 
 
 const sendMessageStart = ( state, action ) => {
-  return updateObject( state, { loadingSendMessage: true })
+  return updateObject( state, { loadingSendMessage: true, errorSendMessage: null })
 }
 
 const sendMessageSuccess = ( state, action ) => {
@@ -52,7 +52,7 @@ const sendMessageFail = ( state, action ) => {
 
 
 const fetchLastMessagesStart = ( state, action ) => {
-  return updateObject( state, { loadingLastMessage: true } );
+  return updateObject( state, { loadingLastMessage: true, errorLastMessage: null } );
 };
 
 const fetchLastMessagesSuccess = ( state, action ) => {

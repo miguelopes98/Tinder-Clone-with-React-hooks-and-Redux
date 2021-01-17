@@ -86,7 +86,14 @@ const Chats = (props) => {
       );
     }
   }
-    
+  
+  let messagesClass = [classes.messages];
+
+  if(props.lastMessagesToShow.length === 0){
+    messagesClass.push(classes.notice);
+  }
+
+  let noMessagesClasses = messagesClass.join(' ');
 
   return(
     <div>
@@ -95,7 +102,7 @@ const Chats = (props) => {
 
       {matches}
 
-      <h2 className={classes.messages}>Messages</h2>
+      <h2 className={noMessagesClasses}>Messages</h2>
 
       {messages}
 

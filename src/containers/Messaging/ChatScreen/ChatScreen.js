@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {useParams} from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -8,6 +8,8 @@ import * as actions from '../../../store/actions/index';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
 const ChatScreen = (props) => {
+
+  const messagesEndRef = useRef(null);
 
   const [input, setInput] = useState('');
 
@@ -22,6 +24,14 @@ const ChatScreen = (props) => {
     
     //we also want to re fetch messages when a new message is sent
   }, [props.onFetchMessages, props.userId, params.userId, props.loadingSendMessage]);
+
+  useEffect(() => {
+    if(messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [props.loadingFetchMessages])
+
+  
 
   const sendHandler = (event) => {
     event.preventDefault();
@@ -79,13 +89,16 @@ const ChatScreen = (props) => {
         <button onClick={sendHandler} type="submit" className={classes.inputButton}>SEND</button>
       </form>
 
+      <div style={{ paddingTop: '50px', float:"left", clear: "both" }}
+        ref={messagesEndRef}>
+      </div>
+
     </div>
   );
 };
 
 const mapStateToProps = state => {
   return {
-    loadingLastMessage: state.messages.loadingLastMessage,
     loadingFetchMessages: state.messages.loadingFetchMessages,
     loadingSendMessage: state.messages.loadingSendMessage,
     messagesToShow: state.messages.messagesToShow,

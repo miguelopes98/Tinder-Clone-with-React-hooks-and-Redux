@@ -189,17 +189,17 @@ const userProfile = (props) => {
 
   let errorMessage = null;
 
-  if ( props.errorAuth || props.errorUserCreation ) {
+  if ( props.error || props.errorUpdateUser ) {
     errorMessage = (
       <React.Fragment>
-        <p>{props.errorAuth ? props.errorAuth.message : null}</p>
-        <p>{props.errorUserCreation ? props.errorUserCreation.message : null}</p>
+        <p>{props.error ? props.error.message : null}</p>
+        <p>{props.errorUpdateUser ? props.errorUpdateUser.message : null}</p>
       </React.Fragment>
     );
   }
 
   let userUpdateRedirect = null;
-  if ( props.loadingUpdateUser === false && isUpdating === false ) {
+  if ( props.loadingUpdateUser === false && isUpdating === false && props.isAuthenticated ) {
     userUpdateRedirect = <Redirect to="/" />
   }
 
@@ -221,7 +221,10 @@ const mapStateToProps = state => {
     authenticatedUser: state.updateUser.authenticatedUser,
     userId: state.auth.userId,
     loading: state.updateUser.loadingFetchingUser,
-    loadingUpdateUser: state.updateUser.loadingUpdateUser
+    loadingUpdateUser: state.updateUser.loadingUpdateUser,
+    error: state.updateUser.error,
+    errorUpdateUser: state.updateUser.errorUpdateUser,
+    isAuthenticated: state.auth.token !== null
   };
 };
 

@@ -8,7 +8,7 @@ const initialState = {
 };
 
 const fetchMatchesStart = ( state ) => {
-  return updateObject( state, { loading: true } );
+  return updateObject( state, { loading: true, error: null } );
 };
 
 const fetchMatchesSuccess = ( state, action ) => {

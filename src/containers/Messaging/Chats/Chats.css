@@ -20,13 +20,18 @@ h1 {
 
 .newMatches {
   padding: 20px;
+  padding-bottom: 50px;
   color: #fe3d71;
 }
 
 .messages {
-  padding-top: 30px;
+  padding-top: 50px;
   padding-left: 20px;
   color: #fe3d71;
+}
+
+.notice{
+  padding-bottom: 50px;
 }
 
 .tiles {
