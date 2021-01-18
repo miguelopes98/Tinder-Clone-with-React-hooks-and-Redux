@@ -70,6 +70,25 @@ const TinderCards = (props) => {
     setClickedBioPerson(person);
   }
 
+  const [number, setNumber] = useState(0);
+
+  const pictureClickHandler = (clickSide, numberPictures) => {
+    console.log(number);
+    console.log(numberPictures);
+    if(clickSide === "left" && number > 0) {
+      setNumber(prevState => {
+        return prevState - 1;
+      });
+    }
+    if(clickSide === "right" && number < numberPictures) {
+      setNumber(prevState => {
+        return prevState + 1;
+      });
+    }
+    console.log(number);
+    console.log(numberPictures);
+  }
+
 
   let users= null;
     
@@ -77,10 +96,19 @@ const TinderCards = (props) => {
   //therefore, we would render a spinner, then the paragraph saying we have no users and then the users, because it wouldn't give enough time to search for users,
   //this way we fix that problem
   if(props.searchedForUsers === true) {
-     users = (
+    users = (
       <div className={classes.cardContainer}>
         {/* we're looping through the users we have and outputting them*/}
         {props.usersToShow.map((person, index) => {
+
+          let divPictures = [];
+          
+          for(let key in person.profilePicture) {
+            divPictures.push(0);
+          }
+
+          divPictures[number] = <div className={classes.pictureLineActive}></div>;
+
           return (
             //this component is from a package we installed, the documentation can be found in https://www.npmjs.com/package/react-tinder-card 
             <TinderCard
@@ -91,11 +119,23 @@ const TinderCards = (props) => {
               //this doesn't allow the user to swipe up and down, if we want to include the super like we have to change this to not include up
               preventSwipe={['up', 'down']}
             >
-              <div 
+              <div
                 //we're setting a backgroundImage css style to be url(something); this syntax is recognized by css, then we just used ${} to output something dynamic,
                 //we used backticks instead of regular quotes ("") because that allows us to input something dynamic, while the regular quotes doesnt, not even if we had used "url(" + {person.url} + ");"
-                style={{ backgroundImage: `url("${person.profilePicture}")` }}
+                style={{ backgroundImage: `url("${person.profilePicture[number]}")` }}
                 className={classes.card}>
+                  <div className={classes.parent}>
+                    {divPictures.map((arrElement, index) => {
+                      if(index === number){
+                        return <div key={index} className={classes.pictureLineActive}></div>;
+                      }
+                      else {
+                        return <div key={index} className={classes.pictureLine}></div>
+                      }
+                    })}
+                  </div>
+                  <div onClick={() => pictureClickHandler('left', divPictures.length - 1 )} className={classes.left}></div>
+                  <div onClick={() => pictureClickHandler('right', divPictures.length - 1)} className={classes.right}></div>
                   <h3>{person.firstName}, {person.age}</h3>
               </div>
               <IconButton onClick={() => bioClickHandler(person)} id={classes.plus}>
@@ -137,6 +177,8 @@ const TinderCards = (props) => {
     bio = (
       <Modal show={true}>
         <div className={classes.divModal}>
+          <h1 className={classes.bioTitle}>User's Bio</h1>
+          <hr/>
           <h3>{clickedBioPerson.firstName} {clickedBioPerson.lastName}, {clickedBioPerson.age}</h3>
 
           <p className={classes.bioText}>{clickedBioPerson.bio}</p>
@@ -149,7 +191,6 @@ const TinderCards = (props) => {
 
   return (
     <div>
-      {console.log(props.error)}
       {props.error? 
         <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> 
         : 
