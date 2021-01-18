@@ -12,7 +12,7 @@ const initialState = {
 };
 
 const fetchUsersStart = ( state, action ) => {
-  return updateObject( state, { loading: true } );
+  return updateObject( state, { loading: true, error: null } );
 };
 
 const fetchUsersSuccess = ( state, action ) => {

@@ -8,6 +8,8 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './UserProfile.css';
 import * as actions from '../../store/actions/index';
 import { updateObject, checkValidity } from '../../sharedFunctions/utilityFunctions';
+import axios from '../../axios-instance';
+import withErrorHandler from '../../hoc/withErrorHandler';
 
 const userProfile = (props) => {
 
@@ -187,31 +189,26 @@ const userProfile = (props) => {
     registerInfo = <Spinner />
   }
 
-  let errorMessage = null;
-
-  if ( props.error || props.errorUpdateUser ) {
-    errorMessage = (
-      <React.Fragment>
-        <p>{props.error ? props.error.message : null}</p>
-        <p>{props.errorUpdateUser ? props.errorUpdateUser.message : null}</p>
-      </React.Fragment>
-    );
-  }
-
   let userUpdateRedirect = null;
-  if ( props.loadingUpdateUser === false && isUpdating === false && props.isAuthenticated ) {
+  if ( props.loadingUpdateUser === false && isUpdating === false && props.isAuthenticated && props.error === null && props.errorUpdateUser === null) {
     userUpdateRedirect = <Redirect to="/" />
   }
 
   return (
-    <div className={classes.UpdateForm}>
-      <h1>Update your Profile Information</h1>
-      {userUpdateRedirect}
-      {errorMessage}
-      <form onSubmit={submitHandler}>
-        {registerInfo}
-        <Button btnType="Success" disabled={!registerFormIsValid}>SUBMIT</Button>
-      </form>
+    <div>
+      {console.log(props.error + " " + props.errorUpdateUser)}
+      {props.error || props.errorUpdateUser ? 
+        <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> 
+        : 
+        <div className={classes.UpdateForm}>
+          <h1>Update your Profile Information</h1>
+          {userUpdateRedirect}
+          <form onSubmit={submitHandler}>
+            {registerInfo}
+            <Button btnType="Success" disabled={!registerFormIsValid}>SUBMIT</Button>
+          </form>
+        </div>
+      }
     </div>
   );
 }
@@ -235,4 +232,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect( mapStateToProps, mapDispatchToProps )( userProfile );
+export default withErrorHandler( connect( mapStateToProps, mapDispatchToProps )( userProfile ), axios);

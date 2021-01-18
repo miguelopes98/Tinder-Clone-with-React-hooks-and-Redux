@@ -10,7 +10,7 @@ const initialState = {
 };
 
 const fetchAuthenticatedUserStart = ( state, action ) => {
-  return updateObject( state, { loadingFetchingUser: true, error: null } );
+  return updateObject( state, { loadingFetchingUser: true, error: null, errorUpdateUser: null } );
 };
 
 const fetchAuthenticatedUserSuccess = ( state, action ) => {
@@ -41,8 +41,8 @@ const reducer = ( state = initialState, action ) => {
     case actionTypes.FETCH_AUTHENTICATED_USER_START: return fetchAuthenticatedUserStart( state, action );
     case actionTypes.FETCH_AUTHENTICATED_USER_SUCCESS: return fetchAuthenticatedUserSuccess( state, action );
     case actionTypes.FETCH_AUTHENTICATED_USER_FAIL: return fetchAuthenticatedUserFail( state, action );
-    case actionTypes.UPDATE_USER_START: return updateUserFail( state, action );
-    case actionTypes.UPDATE_USER_FAIL: return updateUserStart( state, action );
+    case actionTypes.UPDATE_USER_START: return updateUserStart( state, action );
+    case actionTypes.UPDATE_USER_FAIL: return updateUserFail( state, action );
     case actionTypes.UPDATE_USER_SUCCESS: return updateUserSuccess( state, action );
     default:
       return state;

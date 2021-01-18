@@ -7,6 +7,8 @@ import Chat from './Chat/Chat';
 import * as actions from '../../../store/actions/index';
 import Match from './Match/Match';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import axios from '../../../axios-instance';
+import withErrorHandler from '../../../hoc/withErrorHandler';
 
 const Chats = (props) => {
 
@@ -95,17 +97,25 @@ const Chats = (props) => {
 
   let noMessagesClasses = messagesClass.join(' ');
 
-  return(
+  let renderData = <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> ;
+  
+  if(!props.errorLastMessage && !props.error) {
+    renderData = (
+      <div>
+        <h2 className={classes.newMatches}>New Matches</h2>
+
+        {matches}
+
+        <h2 className={noMessagesClasses}>Messages</h2>
+
+        {messages}
+      </div>
+    );
+  }
+  
+  return (
     <div>
-
-      <h2 className={classes.newMatches}>New Matches</h2>
-
-      {matches}
-
-      <h2 className={noMessagesClasses}>Messages</h2>
-
-      {messages}
-
+      {renderData}
     </div>
   );
 };
@@ -116,7 +126,9 @@ const mapStateToProps = state => {
     loading: state.matches.loading,
     loadingLastMessage: state.messages.loadingLastMessage,
     userId: state.auth.userId,
-    lastMessagesToShow: state.messages.lastMessagesToShow
+    lastMessagesToShow: state.messages.lastMessagesToShow,
+    errorLastMessage: state.messages.errorLastMessage,
+    error: state.matches.error
   };
 };
 
@@ -127,4 +139,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect( mapStateToProps, mapDispatchToProps )(Chats);
+export default withErrorHandler(connect( mapStateToProps, mapDispatchToProps )(Chats), axios);

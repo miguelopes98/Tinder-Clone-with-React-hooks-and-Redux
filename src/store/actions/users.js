@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../axios-instance';
 
 import * as actionTypes from './actionTypes';
 
@@ -123,6 +123,8 @@ export const userSwipedDirection = (direction) => {
 
 export const match = (authenticatedUser, swipedUserId, direction) => {
   return dispatch => {
+    //this is only to reset the error if there was any, I know im not fetching users
+    dispatch(fetchUsersStart());
     //getting the user that was swiped on so that we can grab the firebase key and save it
     let token = localStorage.getItem("token");
     const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + swipedUserId + '"';

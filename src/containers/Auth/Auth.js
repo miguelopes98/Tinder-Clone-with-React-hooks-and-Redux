@@ -8,6 +8,8 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './Auth.css';
 import * as actions from '../../store/actions/index';
 import { updateObject, checkValidity } from '../../sharedFunctions/utilityFunctions';
+import axios from '../../axios-instance';
+import withErrorHandler from '../../hoc/withErrorHandler';
 
 const auth = (props) => {
 
@@ -261,25 +263,39 @@ const auth = (props) => {
       </React.Fragment>
     );
   }
-
+  console.log(props.errorUserCreation);
   let authRedirect = null;
-  if ( props.isAuthenticated && props.loadingUserCreation === false ) {
+  if ( props.isAuthenticated && props.loadingUserCreation === false && !props.errorAuth && !props.errorUserCreation) {
     authRedirect = <Redirect to="/" />
   }
 
   return (
-    <div className={classes.Auth}>
-      {authRedirect}
-      {errorMessage}
-      <form onSubmit={submitHandler}>
-        {form}
-        {registerInfo}
-        <Button btnType="Success" disabled={isSignup ? !registerFormIsValid : false}>SUBMIT</Button>
-      </form>
-      <Button
-        clicked={switchAuthModeHandler}
-        btnType="Danger">SWITCH TO {isSignup ? 'SIGNIN' : 'SIGNUP'}</Button>
+
+    <div>
+
+      {props.errorAuth || props.errorUserCreation ? 
+        <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> 
+        : 
+        <div>
+          <div className={classes.Auth}>
+            {authRedirect}
+            {errorMessage}
+            <form onSubmit={submitHandler}>
+              {form}
+              {registerInfo}
+              <Button btnType="Success" disabled={isSignup ? !registerFormIsValid : false}>SUBMIT</Button>
+            </form>
+            <Button
+              clicked={switchAuthModeHandler}
+              btnType="Danger">SWITCH TO {isSignup ? 'SIGNIN' : 'SIGNUP'}</Button>
+          </div>
+        </div>
+      }
+
+
     </div>
+
+    
   );
 }
 
@@ -301,4 +317,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect( mapStateToProps, mapDispatchToProps )( auth );
+export default withErrorHandler(connect( mapStateToProps, mapDispatchToProps )( auth ), axios);

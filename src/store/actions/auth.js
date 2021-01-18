@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../axios-instance';
 
 import * as actionTypes from './actionTypes';
 
@@ -70,7 +70,6 @@ export const userCreatingFail = (error) => {
 export const auth = (email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn, bio ) => {
   return dispatch => {
 
-    console.log(bio);
     dispatch(authStart());
 
     const authData = {
@@ -118,11 +117,32 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
           }
           let token = localStorage.getItem("token");
           axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users.json?auth=' + token, userData)
-            .then(response => {
-              dispatch(userCreatingSuccess(userData.userId));
+            .then(res => {
+              //idk why, but this would never throw an error, if the response came back undefined, no error would be thrown, and userCreatingSuccess would be dispatched regardless, therefore,
+              //i imposed this status check, to make sure that only is done if we actually got a response back
+              console.log(res);
+              //dispatch(userCreatingSuccess(userData.userId))
+              //if there is a response (that isn't null or undefined), we check for the status, if this doesn't apply, then we dispatch error
+              if(res){
+                if(res.status === 200) {
+                  dispatch(userCreatingSuccess(userData.userId))
+                }
+                else{
+                  dispatch(userCreatingFail(true));
+                  //if we don't manage to create the respective user account, then we just logout the user
+                  dispatch(logout());
+                }
+              }
+              else {
+                dispatch(userCreatingFail(true));
+                //if we don't manage to create the respective user account, then we just logout the user
+                dispatch(logout());
+              }
             })
             .catch(err => {
-              dispatch(userCreatingFail(err.response.data.error));
+              dispatch(userCreatingFail(err));
+              //if we don't manage to create the respective user account, then we just logout the user
+              dispatch(logout());
             })
         }
         
@@ -130,7 +150,7 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
         dispatch(checkAuthTimeout(response.data.expiresIn));
       })
       .catch(err => {
-        dispatch(authFail(err.response.data.error));
+        dispatch(authFail(err));
       });
 
       

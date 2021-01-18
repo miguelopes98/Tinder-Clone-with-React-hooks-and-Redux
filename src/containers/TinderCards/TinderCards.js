@@ -13,6 +13,8 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import axios from '../../axios-instance';
+import withErrorHandler from '../../hoc/withErrorHandler';
 
 const TinderCards = (props) => {
 
@@ -147,11 +149,19 @@ const TinderCards = (props) => {
 
   return (
     <div>
-      {users}
+      {console.log(props.error)}
+      {props.error? 
+        <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> 
+        : 
+        <div>
+          {users}
 
-      {modal}
+          {modal}
 
-      {bio}
+          {bio}
+        </div>
+      }
+        
 
       <div className={classes.swipeButtons}>
         <IconButton id={classes.repeat}>
@@ -189,7 +199,8 @@ const mapStateToProps = state => {
     loadingUserCreation: state.auth.loadingUserCreation,
     lastDirection: state.users.lastDirection,
     searchedForUsers: state.users.searchedForUsers,
-    isAuthenticated: state.auth.token !== null
+    isAuthenticated: state.auth.token !== null,
+    error: state.users.error
   };
 };
 
@@ -200,4 +211,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect( mapStateToProps, mapDispatchToProps )(TinderCards);
+export default withErrorHandler(connect( mapStateToProps, mapDispatchToProps )(TinderCards), axios);

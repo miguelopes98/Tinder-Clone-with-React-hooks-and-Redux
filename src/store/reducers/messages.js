@@ -15,7 +15,7 @@ const initialState = {
 };
 
 const fetchMessagesStart = ( state, action ) => {
-  return updateObject( state, { loadingFetchMessages: true, messagesToShow: [], recipientInfo: null, errorFetchMessages: null } );
+  return updateObject( state, { loadingFetchMessages: true, messagesToShow: [], recipientInfo: null, errorFetchMessages: null} );
 };
 
 const fetchMessagesSuccess = ( state, action ) => {

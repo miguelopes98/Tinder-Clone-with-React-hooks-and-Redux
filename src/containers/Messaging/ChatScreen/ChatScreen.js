@@ -6,6 +6,8 @@ import classes from './ChatScreen.css';
 import Avatar from '@material-ui/core/Avatar';
 import * as actions from '../../../store/actions/index';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import axios from '../../../axios-instance';
+import withErrorHandler from '../../../hoc/withErrorHandler';
 
 const ChatScreen = (props) => {
 
@@ -18,7 +20,7 @@ const ChatScreen = (props) => {
 
   useEffect(() => {
     //params.userId is the id passed as a url parameter which is the id of the recipient
-    if(props.userId && !props.loadingSendMessage){
+    if(props.userId && !props.loadingSendMessage && props.errorSendMessage === false){
       props.onFetchMessages(props.userId, params.userId);
     }
     
@@ -43,6 +45,10 @@ const ChatScreen = (props) => {
     setInput("");
   }
 
+  if(props.errorFetchMessages || props.errorSendMessage) {
+    return <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1>;
+  }
+
   if(!props.userId || !props.recipientInfo){
     return (
       <Spinner/>
@@ -50,6 +56,7 @@ const ChatScreen = (props) => {
   }
 
   return (
+
     <div className={classes.chatScreen}>
       <p className={classes.timestamp}>You matched with {props.recipientInfo.name} on 10/08/2020</p>
       {props.messagesToShow.map( (message, index) => {
@@ -94,6 +101,7 @@ const ChatScreen = (props) => {
       </div>
 
     </div>
+    
   );
 };
 
@@ -103,7 +111,9 @@ const mapStateToProps = state => {
     loadingSendMessage: state.messages.loadingSendMessage,
     messagesToShow: state.messages.messagesToShow,
     userId: state.auth.userId,
-    recipientInfo: state.messages.recipientInfo
+    recipientInfo: state.messages.recipientInfo,
+    errorFetchMessages: state.messages.errorFetchMessages,
+    errorSendMessage: state.messages.errorSendMessage
   };
 };
 
@@ -114,4 +124,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect( mapStateToProps, mapDispatchToProps )(ChatScreen);
+export default withErrorHandler(connect( mapStateToProps, mapDispatchToProps )(ChatScreen), axios);
