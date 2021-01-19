@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { Redirect } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import * as actions from '../../../store/actions/index';
 
