@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 import Input from '../../components/UI/Input/Input';
@@ -8,10 +8,18 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './Auth.css';
 import * as actions from '../../store/actions/index';
 import { updateObject, checkValidity } from '../../sharedFunctions/utilityFunctions';
-import axios from '../../axios-instance';
-import withErrorHandler from '../../hoc/withErrorHandler';
 
 const auth = (props) => {
+
+
+  const dispatch = useDispatch();
+  const loadingAuth = useSelector( state => state.auth.loading );
+  const errorAuth = useSelector( state => state.auth.error );
+  const loadingUserCreation = useSelector( state => state.auth.loadingUserCreation );
+  const errorUserCreation = useSelector( state => state.auth.errorUserCreation );
+  const isAuthenticated = useSelector( state => state.auth.token !== null );
+  const onAuth = useCallback(( email, password, isSignup, profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio ) => dispatch( actions.auth( email, password, isSignup, profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio ) ), [dispatch]);
+
 
   //authForm state, where we setup the authentication form/sign in form
   const [ authForm, setAuthForm] = useState({
@@ -243,7 +251,7 @@ const auth = (props) => {
     event.preventDefault();
 
     //login/register the user
-    props.onAuth( authForm.email.value, authForm.password.value, isSignup, registerForm.profilePicture1.value, registerForm.profilePicture2.value, registerForm.profilePicture3.value
+    onAuth( authForm.email.value, authForm.password.value, isSignup, registerForm.profilePicture1.value, registerForm.profilePicture2.value, registerForm.profilePicture3.value
       , registerForm.profilePicture4.value, registerForm.profilePicture5.value, registerForm.age.value,
       registerForm.firstName.value, registerForm.lastName.value, registerForm.gender.value, registerForm.interestedIn.value, registerForm.bio.value );
   }
@@ -303,22 +311,22 @@ const auth = (props) => {
     ));
   };
 
-  if ( props.loadingAuth || props.loadingUserCreation ) {
+  if ( loadingAuth || loadingUserCreation ) {
     form = <Spinner />
   }
 
   let errorMessage = null;
 
-  if ( props.errorAuth || props.errorUserCreation ) {
+  if ( errorAuth || errorUserCreation ) {
     errorMessage = (
       <React.Fragment>
-        <p>{props.errorAuth ? props.errorAuth.message : null}</p>
-        <p>{props.errorUserCreation ? props.errorUserCreation.message : null}</p>
+        <p>{errorAuth ? errorAuth.message : null}</p>
+        <p>{errorUserCreation ? errorUserCreation.message : null}</p>
       </React.Fragment>
     );
   }
   let authRedirect = null;
-  if ( props.isAuthenticated && props.loadingUserCreation === false && !props.errorAuth && !props.errorUserCreation) {
+  if ( isAuthenticated && loadingUserCreation === false && !errorAuth && !errorUserCreation) {
     authRedirect = <Redirect to="/" />
   }
 
@@ -340,22 +348,4 @@ const auth = (props) => {
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    loadingAuth: state.auth.loading,
-    errorAuth: state.auth.error,
-    loadingUserCreation: state.auth.loadingUserCreation,
-    errorUserCreation: state.auth.errorUserCreation,
-    isAuthenticated: state.auth.token !== null,
-    userId: state.auth.userId//,
-    //authRedirectPath: state.auth.authRedirectPath
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onAuth: ( email, password, isSignup, profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio ) => dispatch( actions.auth( email, password, isSignup, profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio ) )
-  };
-};
-
-export default connect( mapStateToProps, mapDispatchToProps )( auth );
+export default auth;

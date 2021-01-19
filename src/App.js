@@ -1,17 +1,29 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, Suspense} from 'react';
 import { Switch, Route, withRouter, Redirect} from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import classes from './App.css';
 import Header from './components/Navbar/Header';
 import TinderCards from './containers/TinderCards/TinderCards';
-import Chats from './containers/Messaging/Chats/Chats';
-import ChatScreen from './containers/Messaging/ChatScreen/ChatScreen';
-import Auth from './containers/Auth/Auth';
 import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
-import UserProfile from './containers/UserProfile/UserProfile';
 
+
+const UserProfile = React.lazy(() => {
+  return import('./containers/UserProfile/UserProfile');
+});
+
+const Chats = React.lazy(() => {
+  return import('./containers/Messaging/Chats/Chats');
+});
+
+const ChatScreen = React.lazy(() => {
+  return import('./containers/Messaging/ChatScreen/ChatScreen');
+});
+
+const Auth = React.lazy(() => {
+  return import('./containers/Auth/Auth');
+});
 
 
 const App = (props) => {
@@ -87,7 +99,7 @@ const App = (props) => {
 
   return (
     <div className={classes.App}>
-        {routes}
+      <Suspense fallback={<p>Loading...</p>}>{routes}</Suspense>
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 import Input from '../../components/UI/Input/Input';
@@ -13,11 +13,24 @@ import withErrorHandler from '../../hoc/withErrorHandler';
 
 const userProfile = (props) => {
 
+  
+  const dispatch = useDispatch();
+  const authenticatedUser = useSelector( state => state.updateUser.authenticatedUser );
+  const userId = useSelector( state => state.auth.userId );
+  const loading = useSelector( state => state.updateUser.loadingFetchingUser );
+  const loadingUpdateUser = useSelector( state => state.updateUser.loadingUpdateUser );
+  const error = useSelector( state => state.updateUser.error );
+  const errorUpdateUser = useSelector( state => state.updateUser.errorUpdateUser );
+  const isAuthenticated = useSelector( state => state.auth.token !== null );
+  const onFetchAuthenticatedUser = useCallback(( userId ) => dispatch( actions.fetchAuthenticatedUser( userId ) ), [dispatch]);
+  const onUpdateUser = useCallback((profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio) => dispatch( actions.updateUser(profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio)), [dispatch]);
+
+
   //registerForm state, where we setup the sign up part of the form, its only rendered if the user is registering, not signing in
   const [registerForm, setRegisterForm] = useState()
   const [formIsReady, setFormIsReady] = useState(false);
 
-  if(props.authenticatedUser && !formIsReady) {
+  if(authenticatedUser && !formIsReady) {
     setFormIsReady(true);
     setRegisterForm({
       profilePicture1: {
@@ -26,7 +39,7 @@ const userProfile = (props) => {
           type: 'text',
           placeholder: 'Profile Picture URL'
         },
-        value: props.authenticatedUser.profilePicture[0],
+        value: authenticatedUser.profilePicture[0],
         validation: {
           required: true
         },
@@ -39,7 +52,7 @@ const userProfile = (props) => {
           type: 'text',
           placeholder: 'Profile Picture URL'
         },
-        value: props.authenticatedUser.profilePicture[1] ? props.authenticatedUser.profilePicture[1] : '',
+        value: authenticatedUser.profilePicture[1] ? authenticatedUser.profilePicture[1] : '',
         validation: {
           required: false
         },
@@ -52,7 +65,7 @@ const userProfile = (props) => {
           type: 'text',
           placeholder: 'Profile Picture URL'
         },
-        value: props.authenticatedUser.profilePicture[2] ? props.authenticatedUser.profilePicture[2] : '',
+        value: authenticatedUser.profilePicture[2] ? authenticatedUser.profilePicture[2] : '',
         validation: {
           required: false
         },
@@ -65,7 +78,7 @@ const userProfile = (props) => {
           type: 'text',
           placeholder: 'Profile Picture URL'
         },
-        value: props.authenticatedUser.profilePicture[3] ? props.authenticatedUser.profilePicture[3] : '',
+        value: authenticatedUser.profilePicture[3] ? authenticatedUser.profilePicture[3] : '',
         validation: {
           required: false
         },
@@ -78,7 +91,7 @@ const userProfile = (props) => {
           type: 'text',
           placeholder: 'Profile Picture URL'
         },
-        value: props.authenticatedUser.profilePicture[4] ? props.authenticatedUser.profilePicture[4] : '',
+        value: authenticatedUser.profilePicture[4] ? authenticatedUser.profilePicture[4] : '',
         validation: {
           required: false
         },
@@ -93,7 +106,7 @@ const userProfile = (props) => {
           min: '18',
           max: '99'
         },
-        value: props.authenticatedUser.age,
+        value: authenticatedUser.age,
         validation: {
           required: true
         },
@@ -106,7 +119,7 @@ const userProfile = (props) => {
           type: 'text',
           placeholder: 'First Name'
         },
-        value: props.authenticatedUser.firstName,
+        value: authenticatedUser.firstName,
         validation: {
           required: true
         },
@@ -119,7 +132,7 @@ const userProfile = (props) => {
           type: 'text',
           placeholder: 'Last Name'
         },
-        value: props.authenticatedUser.lastName,
+        value: authenticatedUser.lastName,
         validation: {
           required: true
         },
@@ -132,7 +145,7 @@ const userProfile = (props) => {
           type: 'text',
           placeholder: 'Say something about yourself...'
         },
-        value: props.authenticatedUser.bio,
+        value: authenticatedUser.bio,
         validation: {
           required: true
         },
@@ -148,7 +161,7 @@ const userProfile = (props) => {
           ],
           label: "Gender"
         },
-        value: props.authenticatedUser.gender,
+        value: authenticatedUser.gender,
         validation: {
           //required: true,
           isSelect: true
@@ -165,7 +178,7 @@ const userProfile = (props) => {
           ],
           label: 'Interested In'
         },
-        value: props.authenticatedUser.interestedIn,
+        value: authenticatedUser.interestedIn,
         validation: {
           //required: true,
           isSelect: true
@@ -182,8 +195,8 @@ const userProfile = (props) => {
 
   useEffect(() => {
     //fecthing authenticated user info
-    props.onFetchAuthenticatedUser(props.userId);
-  }, [props.userId]);
+    onFetchAuthenticatedUser(userId);
+  }, [userId]);
 
   const inputChangedHandler = ( event, controlName, form ) => {
     const updatedControls = updateObject( form, {
@@ -209,7 +222,7 @@ const userProfile = (props) => {
     event.preventDefault();
     setIsUpdating(false);
     //login/register the user
-    props.onUpdateUser( registerForm.profilePicture1.value, registerForm.profilePicture2.value, registerForm.profilePicture3.value, registerForm.profilePicture4.value, registerForm.profilePicture5.value,
+    onUpdateUser( registerForm.profilePicture1.value, registerForm.profilePicture2.value, registerForm.profilePicture3.value, registerForm.profilePicture4.value, registerForm.profilePicture5.value,
       registerForm.age.value, registerForm.firstName.value, registerForm.lastName.value, registerForm.gender.value, 
       registerForm.interestedIn.value, registerForm.bio.value );
   }
@@ -237,18 +250,18 @@ const userProfile = (props) => {
       changed={( event ) => inputChangedHandler( event, registerFormElem.id, registerForm )} />
   ));
 
-  if ( props.loading || props.loadingUserCreation ) {
+  if ( loading || props.loadingUserCreation ) {
     registerInfo = <Spinner />
   }
 
   let userUpdateRedirect = null;
-  if ( props.loadingUpdateUser === false && isUpdating === false && props.isAuthenticated && props.error === null && props.errorUpdateUser === null) {
+  if ( loadingUpdateUser === false && isUpdating === false && isAuthenticated && error === null && errorUpdateUser === null) {
     userUpdateRedirect = <Redirect to="/" />
   }
 
   return (
     <div>
-      {props.error || props.errorUpdateUser ? 
+      {error || errorUpdateUser ? 
         <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> 
         : 
         <div className={classes.UpdateForm}>
@@ -264,23 +277,4 @@ const userProfile = (props) => {
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    authenticatedUser: state.updateUser.authenticatedUser,
-    userId: state.auth.userId,
-    loading: state.updateUser.loadingFetchingUser,
-    loadingUpdateUser: state.updateUser.loadingUpdateUser,
-    error: state.updateUser.error,
-    errorUpdateUser: state.updateUser.errorUpdateUser,
-    isAuthenticated: state.auth.token !== null
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onFetchAuthenticatedUser: ( userId ) => dispatch( actions.fetchAuthenticatedUser( userId ) ),
-    onUpdateUser: (profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio) => dispatch( actions.updateUser(profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio))
-  };
-};
-
-export default withErrorHandler( connect( mapStateToProps, mapDispatchToProps )( userProfile ), axios);
+export default withErrorHandler(  userProfile, axios);

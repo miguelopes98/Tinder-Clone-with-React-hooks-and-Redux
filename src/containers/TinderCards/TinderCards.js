@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import { connect } from 'react-redux';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {Link} from 'react-router-dom';
 
 import classes from './TinderCards.css';
@@ -18,6 +18,18 @@ import withErrorHandler from '../../hoc/withErrorHandler';
 
 const TinderCards = (props) => {
 
+
+  const dispatch = useDispatch();
+  const usersToShow = useSelector( state => state.users.usersToShow );
+  const userId = useSelector( state => state.auth.userId );
+  const loadingUserCreation = useSelector( state => state.auth.loadingUserCreation );
+  const searchedForUsers = useSelector( state => state.users.searchedForUsers );
+  const isAuthenticated = useSelector( state => state.auth.token !== null );
+  const error = useSelector( state => state.users.error );
+  const onFetchUsers = useCallback((token, userId) => dispatch( actions.fetchUsers(token, userId)), [dispatch]);
+  const onUserSwiped = useCallback((direction, userId) => dispatch( actions.userSwiped(direction, userId)), [dispatch]);
+
+
   const [showBio, setShowBio] = useState(false);
 
   const [clickedBioPerson, setClickedBioPerson] = useState();
@@ -26,15 +38,15 @@ const TinderCards = (props) => {
   //initiating the refs array
   let elRefs = useRef([]);
   //if the length of the refs array isn't the same as the usersToShow, then we keep doing this. We want each element of the refs array to hold one ref for each user in the usersToShow list.
-  if (elRefs.current.length !== props.usersToShow.length) {
+  if (elRefs.current.length !== usersToShow.length) {
     // add or remove refs
-    elRefs = Array(props.usersToShow.length).fill().map((_, i) => elRefs.current[i] || React.createRef());
+    elRefs = Array(usersToShow.length).fill().map((_, i) => elRefs.current[i] || React.createRef());
   }
 
   useEffect(() => {
     //we say this in case the user just created an account and gets redirected here, we want to make sure that his profile has finished being created before fetching the users to show him.
-    if(props.loadingUserCreation === false && props.isAuthenticated) {
-      props.onFetchUsers(props.userId);
+    if(loadingUserCreation === false && isAuthenticated) {
+      onFetchUsers(userId);
       //console.log
     }
     //we had to add userId to the dependencies, because this was running before the useEffect hook on the app component was running for whatever reason
@@ -42,19 +54,19 @@ const TinderCards = (props) => {
     //when we added the userId as a dependency, this would run the first time and fail for the same reason and then it would run a second time when the useEffect hook on the app component ran
     //and we would actually get a userId, this component should re render if the props changed and therefore this useEffect hook should run again, but this wasn't happening
     //i dont know why, when I added this as a dependency, it runs when the userId changes, even though it should regardless since it is a prop.
-  },[props.loadingUserCreation, props.userId]);
+  },[loadingUserCreation, userId]);
 
   const swiped = (direction, userId) => {
-    props.onUserSwiped(direction, userId);
+    onUserSwiped(direction, userId);
     
     //everytime we swipe we want to grab the people we show again so that it is always updated
     //this is done in the onUserSwipe action, everytime we successfully swipe someone, we call for the users to be fetched.
   }
 
   const swipe = (dir) => {
-    if (props.usersToShow.length) {
-      const toBeRemoved = props.usersToShow[props.usersToShow.length - 1].userId // Find the card object to be removed
-      const index = props.usersToShow.map(person => person.userId).indexOf(toBeRemoved) // Find the index of which to make the reference to
+    if (usersToShow.length) {
+      const toBeRemoved = usersToShow[usersToShow.length - 1].userId // Find the card object to be removed
+      const index = usersToShow.map(person => person.userId).indexOf(toBeRemoved) // Find the index of which to make the reference to
       // Swipe the card! this simply triggers the onSwipe event listener of the tinder card component of the package we're using, therefore it also triggers
       //the hadndlers that are called when the card is swiped.
       elRefs[index].current.swipe(dir)
@@ -91,11 +103,11 @@ const TinderCards = (props) => {
   // we need the searched for users props because without it, we start with loading as false by default, before trying to grab the users and the usersToShow array is by default length zero as well
   //therefore, we would render a spinner, then the paragraph saying we have no users and then the users, because it wouldn't give enough time to search for users,
   //this way we fix that problem
-  if(props.searchedForUsers === true) {
+  if(searchedForUsers === true) {
     users = (
       <div className={classes.cardContainer}>
         {/* we're looping through the users we have and outputting them*/}
-        {props.usersToShow.map((person, index) => {
+        {usersToShow.map((person, index) => {
 
           let divPictures = [];
           
@@ -143,7 +155,7 @@ const TinderCards = (props) => {
           
       </div>
     );
-    if(props.usersToShow.length === 0 && props.searchedForUsers) {
+    if(usersToShow.length === 0 && searchedForUsers) {
       users = (
         <h1 className={classes.noUsers}>There are currently no people around you, come back later to keep swiping!</h1>
       )
@@ -154,7 +166,7 @@ const TinderCards = (props) => {
   let modal = null;
 
   //if the user isn't authenticated, we render the modal
-  if(!props.isAuthenticated){
+  if(!isAuthenticated){
     modal = (
       <Modal show={true}>
         <div className={classes.divModal}>
@@ -187,7 +199,7 @@ const TinderCards = (props) => {
 
   return (
     <div>
-      {props.error? 
+      {error? 
         <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> 
         : 
         <div>
@@ -227,25 +239,4 @@ const TinderCards = (props) => {
 
 };
 
-const mapStateToProps = state => {
-  return {
-    usersToShow: state.users.usersToShow,
-    loading: state.users.loading,
-    token: state.auth.token,
-    userId: state.auth.userId,
-    loadingUserCreation: state.auth.loadingUserCreation,
-    lastDirection: state.users.lastDirection,
-    searchedForUsers: state.users.searchedForUsers,
-    isAuthenticated: state.auth.token !== null,
-    error: state.users.error
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onFetchUsers: (token, userId) => dispatch( actions.fetchUsers(token, userId)),
-    onUserSwiped: (direction, userId) => dispatch( actions.userSwiped(direction, userId))
-  };
-};
-
-export default withErrorHandler(connect( mapStateToProps, mapDispatchToProps )(TinderCards), axios);
+export default withErrorHandler(TinderCards, axios);

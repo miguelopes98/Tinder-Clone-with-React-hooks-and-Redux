@@ -1,5 +1,5 @@
-import React, {useEffect, createRef} from 'react';
-import { connect } from 'react-redux';
+import React, {useEffect, createRef, useCallback} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ScrollContainer from 'react-indiana-drag-scroll'
 
 import classes from './Chats.css';
@@ -12,12 +12,25 @@ import withErrorHandler from '../../../hoc/withErrorHandler';
 
 const Chats = (props) => {
 
+
+  const dispatch = useDispatch();
+  const usersToShow = useSelector( state => state.matches.usersToShow );
+  const loading = useSelector( state => state.matches.loading );
+  const loadingLastMessage = useSelector( state => state.messages.loadingLastMessage );
+  const userId = useSelector( state => state.auth.userId );
+  const lastMessagesToShow = useSelector( state => state.messages.lastMessagesToShow );
+  const errorLastMessage = useSelector( state => state.messages.errorLastMessage );
+  const error = useSelector( state => state.matches.error );
+  const onFetchMatches = useCallback((userId) => dispatch( actions.fetchMatches(userId)), [dispatch]);
+  const onFetchLastMessages = useCallback((userId) => dispatch(actions.fetchLastMessages(userId)), [dispatch]);
+
+
   useEffect(() => {
-    if(props.userId) {
-      props.onFetchMatches(props.userId);
-      props.onFetchLastMessages(props.userId);
+    if(userId) {
+      onFetchMatches(userId);
+      onFetchLastMessages(userId);
     }
-  }, [props.onFetchMatches, props.onFecthLastMessages, props.userId]);
+  }, [onFetchMatches, onFetchLastMessages, userId]);
 
   const scrollRef = createRef();
 
@@ -28,7 +41,7 @@ const Chats = (props) => {
   };
 
   let matches = <Spinner/>;
-  if(props.loading === false) {
+  if(loading === false) {
 
     matches = (
       <ScrollContainer className={classes.container} vertical={false}>
@@ -37,7 +50,7 @@ const Chats = (props) => {
           onFocus={enableKeyboardCursorToScroll}
           ref={scrollRef}
         >
-          {props.usersToShow.map((user) => (
+          {usersToShow.map((user) => (
             <div
               key={user.userId}
               className={classes.row}
@@ -53,7 +66,7 @@ const Chats = (props) => {
       </ScrollContainer>
     );
 
-    if(props.usersToShow.length === 0) {
+    if(usersToShow.length === 0) {
       matches = (
         <p className={classes.noNewMatches}>You have no new matches. Keep swiping to get more matches!</p>
       );
@@ -64,15 +77,14 @@ const Chats = (props) => {
 
   let messages = <Spinner/>;
 
-  if(props.loadingLastMessage === false) {
+  if(loadingLastMessage === false) {
     messages = (
       <div className={classes.chats}>
-        {props.lastMessagesToShow.map(lastMessage => {
+        {lastMessagesToShow.map(lastMessage => {
           return (
             <Chat
               name={lastMessage.name}
               message={lastMessage.lastMessage}
-              timestamp="40 seconds ago"
               profilePic={lastMessage.profilePicture}
               key={lastMessage.userId}
               userId={lastMessage.userId}
@@ -82,7 +94,7 @@ const Chats = (props) => {
       </div>
     );
     
-    if(props.lastMessagesToShow.length === 0) {
+    if(lastMessagesToShow.length === 0) {
       messages = (
         <p className={classes.noMessages}>You have no messages. Compliment your new matches by sending a message!</p>
       );
@@ -91,7 +103,7 @@ const Chats = (props) => {
   
   let messagesClass = [classes.messages];
 
-  if(props.lastMessagesToShow.length === 0){
+  if(lastMessagesToShow.length === 0){
     messagesClass.push(classes.notice);
   }
 
@@ -99,7 +111,7 @@ const Chats = (props) => {
 
   let renderData = <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> ;
   
-  if(!props.errorLastMessage && !props.error) {
+  if(!errorLastMessage && !error) {
     renderData = (
       <div>
         <h2 className={classes.newMatches}>New Matches</h2>
@@ -120,23 +132,4 @@ const Chats = (props) => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    usersToShow: state.matches.usersToShow,
-    loading: state.matches.loading,
-    loadingLastMessage: state.messages.loadingLastMessage,
-    userId: state.auth.userId,
-    lastMessagesToShow: state.messages.lastMessagesToShow,
-    errorLastMessage: state.messages.errorLastMessage,
-    error: state.matches.error
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onFetchMatches: (userId) => dispatch( actions.fetchMatches(userId)),
-    onFetchLastMessages: (userId) => dispatch(actions.fetchLastMessages(userId))
-  };
-};
-
-export default withErrorHandler(connect( mapStateToProps, mapDispatchToProps )(Chats), axios);
+export default withErrorHandler(Chats, axios);

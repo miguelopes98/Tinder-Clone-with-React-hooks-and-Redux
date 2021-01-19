@@ -14,7 +14,6 @@ const Chat = (props) => {
           <h3>{props.name}</h3>
           <p>{props.message}</p>
         </div>
-        <p className={classes.chatTimestamp}>{props.timestamp}</p>
       </div>
     </NavLink>
   );
