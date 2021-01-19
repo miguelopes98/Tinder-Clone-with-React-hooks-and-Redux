@@ -73,8 +73,6 @@ const TinderCards = (props) => {
   const [number, setNumber] = useState(0);
 
   const pictureClickHandler = (clickSide, numberPictures) => {
-    console.log(number);
-    console.log(numberPictures);
     if(clickSide === "left" && number > 0) {
       setNumber(prevState => {
         return prevState - 1;
@@ -85,8 +83,6 @@ const TinderCards = (props) => {
         return prevState + 1;
       });
     }
-    console.log(number);
-    console.log(numberPictures);
   }
 
 

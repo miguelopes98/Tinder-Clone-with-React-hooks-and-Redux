@@ -67,7 +67,7 @@ export const userCreatingFail = (error) => {
   };
 };
 
-export const auth = (email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn, bio ) => {
+export const auth = (email, password, isSignup, profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio ) => {
   return dispatch => {
 
     dispatch(authStart());
@@ -94,6 +94,34 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
         localStorage.setItem('expirationDate', expirationDate);
         localStorage.setItem('userId', response.data.localId);
 
+        //setting up the profilePicture object
+        let profilePicture = {
+          0: profilePicture1,
+          1: profilePicture2 ? profilePicture2 : null,
+          2: profilePicture3 ? profilePicture3 : null,
+          3: profilePicture4 ? profilePicture4 : null,
+          4: profilePicture5 ? profilePicture5 : null
+        }
+
+        //looping through the object and removing the properties that have null as a value
+        for(let objectKey in profilePicture){
+          if(profilePicture[objectKey] === null){
+            delete profilePicture[objectKey];
+          }
+        }
+
+        //this means that a user might skip an input. and we would have the properties of the profile picture object being 0 and then 2 instead of 1. this fucks up our image rendering
+        //so im going to reset the object properties to make sure this is fixed.
+        let updatedProfilePicture = {};
+        //this will keep track of what the property we're assigning is
+        let index = 0;
+        for(let Key in profilePicture){
+          //we set the value of the property in the new object to be the value of the property in the previous object.
+          //the indexes in this new object are going to be re arranged 0,1,2,3,4. (if we had enough inputs, if we only had 2 inputs, it'll be 0,1. but you get my point)
+          updatedProfilePicture[index] = profilePicture[Key];
+          index = index + 1;
+        }
+
         //now we're going to take the chance to create the user profile if the user was signing up and not just logging in
         if(isSignup){
           dispatch(userCreatingStart());
@@ -103,7 +131,7 @@ export const auth = (email, password, isSignup, profilePicture, age, firstName, 
             firstName: firstName,
             lastName: lastName,
             age: age,
-            profilePicture: profilePicture,
+            profilePicture: updatedProfilePicture,
             gender: gender,
             interestedIn: interestedIn,
             bio: bio,

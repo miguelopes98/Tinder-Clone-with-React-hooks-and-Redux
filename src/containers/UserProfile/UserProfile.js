@@ -196,7 +196,6 @@ const userProfile = (props) => {
 
   return (
     <div>
-      {console.log(props.error + " " + props.errorUpdateUser)}
       {props.error || props.errorUpdateUser ? 
         <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> 
         : 

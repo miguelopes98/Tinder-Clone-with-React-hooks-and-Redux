@@ -47,11 +47,11 @@ const auth = (props) => {
 
   //registerForm state, where we setup the sign up part of the form, its only rendered if the user is registering, not signing in
   const [registerForm, setRegisterForm] = useState({
-    profilePicture: {
+    profilePicture1: {
       elementType: 'input',
       elementConfig: {
         type: 'text',
-        placeholder: 'Profile Picture URL'
+        placeholder: 'First Profile Picture URL'
       },
       value: '',
       validation: {
@@ -59,6 +59,58 @@ const auth = (props) => {
       },
       valid: false,
       touched: false
+    },
+    profilePicture2: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: 'Second Profile Picture URL'
+      },
+      value: '',
+      validation: {
+        required: false
+      },
+      valid: true,
+      touched: true
+    },
+    profilePicture3: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: 'Third Profile Picture URL'
+      },
+      value: '',
+      validation: {
+        required: false
+      },
+      valid: true,
+      touched: true
+    },
+    profilePicture4: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: 'Fourth Profile Picture URL'
+      },
+      value: '',
+      validation: {
+        required: false
+      },
+      valid: true,
+      touched: true
+    },
+    profilePicture5: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: 'Fifth Profile Picture URL'
+      },
+      value: '',
+      validation: {
+        required: false
+      },
+      valid: true,
+      touched: true
     },
     age: {
       elementType: 'input',
@@ -189,8 +241,10 @@ const auth = (props) => {
 
   const submitHandler = ( event ) => {
     event.preventDefault();
+
     //login/register the user
-    props.onAuth( authForm.email.value, authForm.password.value, isSignup, registerForm.profilePicture.value, registerForm.age.value,
+    props.onAuth( authForm.email.value, authForm.password.value, isSignup, registerForm.profilePicture1.value, registerForm.profilePicture2.value, registerForm.profilePicture3.value
+      , registerForm.profilePicture4.value, registerForm.profilePicture5.value, registerForm.age.value,
       registerForm.firstName.value, registerForm.lastName.value, registerForm.gender.value, registerForm.interestedIn.value, registerForm.bio.value );
   }
 
@@ -275,7 +329,7 @@ const auth = (props) => {
 
       {props.errorAuth || props.errorUserCreation ? 
         <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> 
-        : 
+        :
         <div>
           <div className={classes.Auth}>
             {authRedirect}
@@ -313,7 +367,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: ( email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn, bio ) => dispatch( actions.auth( email, password, isSignup, profilePicture, age, firstName, lastName, gender, interestedIn, bio ) )
+    onAuth: ( email, password, isSignup, profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio ) => dispatch( actions.auth( email, password, isSignup, profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio ) )
   };
 };
 
