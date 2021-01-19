@@ -317,39 +317,26 @@ const auth = (props) => {
       </React.Fragment>
     );
   }
-  console.log(props.errorUserCreation);
   let authRedirect = null;
   if ( props.isAuthenticated && props.loadingUserCreation === false && !props.errorAuth && !props.errorUserCreation) {
     authRedirect = <Redirect to="/" />
   }
 
   return (
-
     <div>
-
-      {props.errorAuth || props.errorUserCreation ? 
-        <h1 style={{'textAlign': 'center', 'position': 'absolute', 'top': '50%', 'left': '50%', 'marginRight': '-50%', 'transform': 'translate(-50%, -50%)'}}>Something went wrong!</h1> 
-        :
-        <div>
-          <div className={classes.Auth}>
-            {authRedirect}
-            {errorMessage}
-            <form onSubmit={submitHandler}>
-              {form}
-              {registerInfo}
-              <Button btnType="Success" disabled={isSignup ? !registerFormIsValid : false}>SUBMIT</Button>
-            </form>
-            <Button
-              clicked={switchAuthModeHandler}
-              btnType="Danger">SWITCH TO {isSignup ? 'SIGNIN' : 'SIGNUP'}</Button>
-          </div>
-        </div>
-      }
-
-
+      <div className={classes.Auth}>
+        {authRedirect}
+        {errorMessage}
+        <form onSubmit={submitHandler}>
+          {form}
+          {registerInfo}
+          <Button btnType="Success" disabled={isSignup ? !registerFormIsValid : false}>SUBMIT</Button>
+        </form>
+        <Button
+          clicked={switchAuthModeHandler}
+          btnType="Danger">SWITCH TO {isSignup ? 'SIGNIN' : 'SIGNUP'}</Button>
+      </div>
     </div>
-
-    
   );
 }
 
@@ -371,4 +358,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withErrorHandler(connect( mapStateToProps, mapDispatchToProps )( auth ), axios);
+export default connect( mapStateToProps, mapDispatchToProps )( auth );

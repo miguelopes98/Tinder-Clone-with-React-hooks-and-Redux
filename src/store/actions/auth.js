@@ -86,7 +86,7 @@ export const auth = (email, password, isSignup, profilePicture1, profilePicture2
       url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + process.env.REACT_APP_FIREBASE_API_KEY;
     }
 
-    //creating the user account itself
+    //creating the user account itself/logging in the user if he is logging in and not signing up
     axios.post(url, authData)
       .then(response => {
         const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
@@ -144,6 +144,7 @@ export const auth = (email, password, isSignup, profilePicture1, profilePicture2
             chats: {exists: true}
           }
           let token = localStorage.getItem("token");
+          //creating the user profile
           axios.post('https://tinder-9d380-default-rtdb.firebaseio.com/users.json?auth=' + token, userData)
             .then(res => {
               //idk why, but this would never throw an error, if the response came back undefined, no error would be thrown, and userCreatingSuccess would be dispatched regardless, therefore,
@@ -178,7 +179,7 @@ export const auth = (email, password, isSignup, profilePicture1, profilePicture2
         dispatch(checkAuthTimeout(response.data.expiresIn));
       })
       .catch(err => {
-        dispatch(authFail(err));
+        dispatch(authFail(err.response.data.error));
       });
 
       
