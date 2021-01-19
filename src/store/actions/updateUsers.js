@@ -69,7 +69,7 @@ export const updateUserSuccess = () => {
   };
 };
 
-export const updateUser = (profilePicture, age, firstName, lastName, gender, interestedIn, bio) => {
+export const updateUser = (profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio) => {
   return dispatch => {
     dispatch(updateUserStart());
 
@@ -90,9 +90,37 @@ export const updateUser = (profilePicture, age, firstName, lastName, gender, int
       }
       const loggedInUser = fetchedUser[0];
 
+      //setting up the profilePicture object
+      let profilePicture = {
+        0: profilePicture1,
+        1: profilePicture2 ? profilePicture2 : null,
+        2: profilePicture3 ? profilePicture3 : null,
+        3: profilePicture4 ? profilePicture4 : null,
+        4: profilePicture5 ? profilePicture5 : null
+      }
+
+      //looping through the object and removing the properties that have null as a value
+      for(let objectKey in profilePicture){
+        if(profilePicture[objectKey] === null){
+          delete profilePicture[objectKey];
+        }
+      }
+
+      //this means that a user might skip an input. and we would have the properties of the profile picture object being 0 and then 2 instead of 1. this fucks up our image rendering
+      //so im going to reset the object properties to make sure this is fixed.
+      let updatedProfilePicture = {};
+      //this will keep track of what the property we're assigning is
+      let index = 0;
+      for(let Key in profilePicture){
+        //we set the value of the property in the new object to be the value of the property in the previous object.
+        //the indexes in this new object are going to be re arranged 0,1,2,3,4. (if we had enough inputs, if we only had 2 inputs, it'll be 0,1. but you get my point)
+        updatedProfilePicture[index] = profilePicture[Key];
+        index = index + 1;
+      }
+
       //preparing data structure to update the user info of the logged in user
       const userData = {
-        profilePicture: profilePicture,
+        profilePicture: updatedProfilePicture,
         age: age,
         firstName: firstName,
         lastName: lastName,
@@ -130,21 +158,23 @@ export const updateUser = (profilePicture, age, firstName, lastName, gender, int
 
           //preparing the data we need to update in the matches field
           const userMatchesData = {
-            profilePicture: userData.profilePicture,
+            //here we only need the first picture, we don't need every picture that the user inputted
+            profilePicture: userData.profilePicture[0],
             firstName: userData.firstName,
             userId: userData.userId
           }
 
           //preparing the data we need to updated in the chats field
           const userChatsData = {
-            profilePicture: userData.profilePicture,
+            //here we only need the first picture, we don't need every picture that the user inputted
+            profilePicture: userData.profilePicture[0],
             name: userData.firstName,
             userId: userData.userId
           }
 
           //now we're going to loop through those users and update their matches field that holds the info of the logged in user
           matchedUsers.map(user => {
-            return axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + user.id + '/matches' + userId + '.json?auth=' + token, userMatchesData)
+            return axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + user.id + '/matches/' + userId + '.json?auth=' + token, userMatchesData)
             .then(res => {
               //we don't really wanna do anything, we just wanna keep moving
             })

@@ -143,7 +143,13 @@ export const match = (authenticatedUser, swipedUserId, direction) => {
       //now that we have the key saved in id, we can use the patch request to update the matches filed and use the key in the url
       //we will add the id of the logged in user to the matches field of the swiped user.
       const urlParams = fetchedUsers[0].id 
-      axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + urlParams + '/matches.json?auth=' + token, {[authenticatedUser.userId]: authenticatedUser})
+      //preparing the data we're going to add. we only need the name, first profile picture and user id
+      const authenticatedUserData = {
+        profilePicture: authenticatedUser.profilePicture[0],
+        userId: authenticatedUser.userId,
+        firstName: authenticatedUser.firstName
+      }
+      axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + urlParams + '/matches.json?auth=' + token, {[authenticatedUser.userId]: authenticatedUserData})
       .then( response => {
 
         //now we need to add the match to the logged in user, for that we need the key to the object that represents the logged in user,
@@ -162,7 +168,13 @@ export const match = (authenticatedUser, swipedUserId, direction) => {
 
           //now that we have the firebase key, we need to add the match to the logged in user
           const urlParams1 = authenticatedUser[0].id;
-          axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + urlParams1 + '/matches.json?auth=' + token, {[swipedUserId]: fetchedUsers[0]})
+          //preparing the data we're going to add. we only need the name, first profile picture and user id
+          const fetchedUserData = {
+            profilePicture: fetchedUsers[0].profilePicture[0],
+            userId: fetchedUsers[0].userId,
+            firstName: fetchedUsers[0].firstName
+          }
+          axios.patch('https://tinder-9d380-default-rtdb.firebaseio.com/users/' + urlParams1 + '/matches.json?auth=' + token, {[swipedUserId]: fetchedUserData})
 
             .then( response => {
               dispatch(userSwipedDirection(direction));

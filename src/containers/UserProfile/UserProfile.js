@@ -19,17 +19,68 @@ const userProfile = (props) => {
 
   if(props.authenticatedUser && !formIsReady) {
     setFormIsReady(true);
-
     setRegisterForm({
-      profilePicture: {
+      profilePicture1: {
         elementType: 'input',
         elementConfig: {
           type: 'text',
           placeholder: 'Profile Picture URL'
         },
-        value: props.authenticatedUser.profilePicture,
+        value: props.authenticatedUser.profilePicture[0],
         validation: {
           required: true
+        },
+        valid: true,
+        touched: true
+      },
+      profilePicture2: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Profile Picture URL'
+        },
+        value: props.authenticatedUser.profilePicture[1] ? props.authenticatedUser.profilePicture[1] : '',
+        validation: {
+          required: false
+        },
+        valid: true,
+        touched: true
+      },
+      profilePicture3: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Profile Picture URL'
+        },
+        value: props.authenticatedUser.profilePicture[2] ? props.authenticatedUser.profilePicture[2] : '',
+        validation: {
+          required: false
+        },
+        valid: true,
+        touched: true
+      },
+      profilePicture4: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Profile Picture URL'
+        },
+        value: props.authenticatedUser.profilePicture[3] ? props.authenticatedUser.profilePicture[3] : '',
+        validation: {
+          required: false
+        },
+        valid: true,
+        touched: true
+      },
+      profilePicture5: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Profile Picture URL'
+        },
+        value: props.authenticatedUser.profilePicture[4] ? props.authenticatedUser.profilePicture[4] : '',
+        validation: {
+          required: false
         },
         valid: true,
         touched: true
@@ -158,7 +209,8 @@ const userProfile = (props) => {
     event.preventDefault();
     setIsUpdating(false);
     //login/register the user
-    props.onUpdateUser( registerForm.profilePicture.value, registerForm.age.value, registerForm.firstName.value, registerForm.lastName.value, registerForm.gender.value, 
+    props.onUpdateUser( registerForm.profilePicture1.value, registerForm.profilePicture2.value, registerForm.profilePicture3.value, registerForm.profilePicture4.value, registerForm.profilePicture5.value,
+      registerForm.age.value, registerForm.firstName.value, registerForm.lastName.value, registerForm.gender.value, 
       registerForm.interestedIn.value, registerForm.bio.value );
   }
 
@@ -227,7 +279,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchAuthenticatedUser: ( userId ) => dispatch( actions.fetchAuthenticatedUser( userId ) ),
-    onUpdateUser: (profilePicture, age, firstName, lastName, gender, interestedIn, bio) => dispatch( actions.updateUser(profilePicture, age, firstName, lastName, gender, interestedIn, bio))
+    onUpdateUser: (profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio) => dispatch( actions.updateUser(profilePicture1, profilePicture2, profilePicture3, profilePicture4, profilePicture5, age, firstName, lastName, gender, interestedIn, bio))
   };
 };
 
