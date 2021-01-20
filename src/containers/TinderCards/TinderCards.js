@@ -58,7 +58,7 @@ const TinderCards = (props) => {
 
   const swiped = (direction, userId) => {
     onUserSwiped(direction, userId);
-    
+    setNumber(0);
     //everytime we swipe we want to grab the people we show again so that it is always updated
     //this is done in the onUserSwipe action, everytime we successfully swipe someone, we call for the users to be fetched.
   }
